@@ -16,3 +16,10 @@ cp bin/echoserver <~/.local/bin>
 # run the server
 echoserver start -p 80 --path /echo/shmecho
 ```
+
+## Downloading released binaries
+
+**MacOS cURL Example**
+```bash
+curl -Lf --compressed -o ./echoserver https://github.com/sha1n/echo-server/releases/download/v0.1/echo-server-darwin-amd64
+```
