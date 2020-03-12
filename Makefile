@@ -38,6 +38,7 @@ lint: go-lint
 
 ## compile: Compile the binary.
 compile:
+	@[ -d $(GOBUILD) ] || mkdir -p $(GOBUILD)
 	@-touch $(STDERR)
 	@-rm $(STDERR)
 	@-$(MAKE) -s go-compile 2> $(STDERR)
