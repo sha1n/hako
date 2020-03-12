@@ -13,6 +13,7 @@ GOBUILD := $(GOBASE)/build
 GOFILES := $(shell find . -type f -name '*.go' -not -path './vendor/*')
 GOOS_DARWIN := "darwin"
 GOOS_LINUX := "linux"
+GOOS_WINDOWS := "windows"
 GOARCH := "amd64"
 
 # Use linker flags to provide version/build settings
@@ -60,18 +61,22 @@ go-format:
 	@echo "  >  Formating source files..."
 	 gofmt -s -w $(GOFILES)
 
-go-compile: go-get go-build-linux go-build-darwin
+go-compile: go-get go-build-linux go-build-darwin go-build-windows
 
 go-test:
 	go test -v `go list ./...`
 
 go-build-linux:
-	@echo "  >  Building binary linux binaries..."
+	@echo "  >  Building linux binaries..."
 	@GOPATH=$(GOPATH) GOOS=$(GOOS_LINUX) GOARCH=$(GOARCH) GOBIN=$(GOBIN) go build $(LDFLAGS) -o $(GOBIN)/$(PROGRAMNAME)-$(GOOS_LINUX)-$(GOARCH) ./cmd/echoserver
 
 go-build-darwin:
-	@echo "  >  Building binary darwin binaries..."
+	@echo "  >  Building darwin binaries..."
 	@GOPATH=$(GOPATH) GOOS=$(GOOS_DARWIN) GOARCH=$(GOARCH) GOBIN=$(GOBIN) go build $(LDFLAGS) -o $(GOBIN)/$(PROGRAMNAME)-$(GOOS_DARWIN)-$(GOARCH) ./cmd/echoserver
+
+go-build-windows:
+	@echo "  >  Building windows binaries..."
+	@GOPATH=$(GOPATH) GOOS=$(GOOS_WINDOWS) GOARCH=$(GOARCH) GOBIN=$(GOBIN) go build $(LDFLAGS) -o $(GOBIN)/$(PROGRAMNAME)-$(GOOS_WINDOWS)-$(GOARCH).exe ./cmd/echoserver
 
 go-generate:
 	@echo "  >  Generating dependency files..."
