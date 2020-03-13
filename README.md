@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/sha1n/echo-server.svg?branch=master)](https://travis-ci.org/sha1n/echo-server)
+
 # echo-server
 Just a simple HTTP echo server with CLI interface for testing...
 
