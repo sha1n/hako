@@ -84,7 +84,7 @@ go-generate:
 
 go-get:
 	@echo "  >  Checking if there is any missing dependencies..."
-	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go get ./...
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go mod tidy
 
 go-install:
 	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go install $(GOFILES)
