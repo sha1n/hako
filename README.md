@@ -20,7 +20,7 @@ cp bin/hako <~/.local/bin>
 
 **MacOS cURL Example**
 ```bash
-curl -Lf --compressed -o ~/.local/bin/hako https://github.com/sha1n/hako/releases/download/v0.2/hako-darwin-amd64
+curl -Lf --compressed -o ~/.local/bin/hako https://github.com/sha1n/hako/releases/download/v0.3.0/hako-darwin-amd64
 ```
 
 ## Usage Example
