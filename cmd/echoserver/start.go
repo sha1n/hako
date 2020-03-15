@@ -1,17 +1,19 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/sha1n/echo-server/cmd/echoserver/http"
 	"github.com/sha1n/echo-server/cmd/echoserver/utils"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 )
 
-func Start(port int, additionalEchoPath string) {
-	server := createHttpServer(port, additionalEchoPath)
+func Start(port int, additionalEchoPath string, verbose bool) {
+	server := createHttpServer(port, additionalEchoPath, verbose)
 	server.StartAsync()
 
 	awaitShutdownSig()
@@ -26,16 +28,16 @@ func awaitShutdownSig() {
 	<-quitChannel
 }
 
-func createHttpServer(port int, additionalEchoPath string) http.Server {
+func createHttpServer(port int, additionalEchoPath string, verbose bool) http.Server {
 	serverBuilder := http.
 		NewServer(port).
-		WithGetHandler("/echo", handleEcho).
-		WithPostHandler("/echo", handleEcho)
+		WithGetHandler("/echo", echoHandlerWith(verbose)).
+		WithPostHandler("/echo", echoHandlerWith(verbose))
 
 	if additionalEchoPath != "" {
 		serverBuilder.
-			WithGetHandler(additionalEchoPath, handleEcho).
-			WithPostHandler(additionalEchoPath, handleEcho).
+			WithGetHandler(additionalEchoPath, echoHandlerWith(verbose)).
+			WithPostHandler(additionalEchoPath, echoHandlerWith(verbose)).
 			Build()
 	}
 
@@ -52,10 +54,29 @@ func createHttpServer(port int, additionalEchoPath string) http.Server {
 	return server
 }
 
-func handleEcho(c *gin.Context) {
-	err := c.Request.Write(c.Writer)
-	if err != nil {
-		log.Println("Failed to echo request:", err)
+func echoHandlerWith(verbose bool) func(*gin.Context) {
+	if verbose {
+		return func(c *gin.Context) {
+			bodyBytes, err := ioutil.ReadAll(c.Request.Body)
+			if err != nil {
+				log.Println("Failed to read request body:", err)
+			} else {
+				fmt.Printf("Received: %s\n\r", string(bodyBytes))
+			}
+
+			_, err = c.Writer.Write(bodyBytes)
+			if err != nil {
+				log.Println("Failed to echo request body:", err)
+			}
+		}
+	}
+
+	return func(c *gin.Context) {
+		err := c.Request.Write(c.Writer)
+		if err != nil {
+			log.Println("Failed to echo request body:", err)
+		}
+
 	}
 
 }
