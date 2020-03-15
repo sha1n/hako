@@ -1,7 +1,7 @@
 # Set VERSION to the latest version tag name. Assuming version tags are formatted 'v*'
 VERSION := $(shell git describe --always --abbrev=0 --tags --match "v*" $(git rev-list --tags --max-count=1))
 BUILD := $(shell git rev-parse $(VERSION))
-PROJECTNAME := "echo-server"
+PROJECTNAME := "hako"
 # We pass that to the main module to generate the correct help text
 PROGRAMNAME := $(PROJECTNAME)
 
@@ -68,15 +68,15 @@ go-test:
 
 go-build-linux:
 	@echo "  >  Building linux binaries..."
-	@GOPATH=$(GOPATH) GOOS=$(GOOS_LINUX) GOARCH=$(GOARCH) GOBIN=$(GOBIN) go build $(LDFLAGS) -o $(GOBIN)/$(PROGRAMNAME)-$(GOOS_LINUX)-$(GOARCH) ./cmd/echoserver
+	@GOPATH=$(GOPATH) GOOS=$(GOOS_LINUX) GOARCH=$(GOARCH) GOBIN=$(GOBIN) go build $(LDFLAGS) -o $(GOBIN)/$(PROGRAMNAME)-$(GOOS_LINUX)-$(GOARCH) ./cmd/hako
 
 go-build-darwin:
 	@echo "  >  Building darwin binaries..."
-	@GOPATH=$(GOPATH) GOOS=$(GOOS_DARWIN) GOARCH=$(GOARCH) GOBIN=$(GOBIN) go build $(LDFLAGS) -o $(GOBIN)/$(PROGRAMNAME)-$(GOOS_DARWIN)-$(GOARCH) ./cmd/echoserver
+	@GOPATH=$(GOPATH) GOOS=$(GOOS_DARWIN) GOARCH=$(GOARCH) GOBIN=$(GOBIN) go build $(LDFLAGS) -o $(GOBIN)/$(PROGRAMNAME)-$(GOOS_DARWIN)-$(GOARCH) ./cmd/hako
 
 go-build-windows:
 	@echo "  >  Building windows binaries..."
-	@GOPATH=$(GOPATH) GOOS=$(GOOS_WINDOWS) GOARCH=$(GOARCH) GOBIN=$(GOBIN) go build $(LDFLAGS) -o $(GOBIN)/$(PROGRAMNAME)-$(GOOS_WINDOWS)-$(GOARCH).exe ./cmd/echoserver
+	@GOPATH=$(GOPATH) GOOS=$(GOOS_WINDOWS) GOARCH=$(GOARCH) GOBIN=$(GOBIN) go build $(LDFLAGS) -o $(GOBIN)/$(PROGRAMNAME)-$(GOOS_WINDOWS)-$(GOARCH).exe ./cmd/hako
 
 go-generate:
 	@echo "  >  Generating dependency files..."
@@ -91,7 +91,7 @@ go-install:
 
 go-clean:
 	@echo "  >  Cleaning build cache"
-	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go clean ./cmd/echoserver
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go clean ./cmd/hako
 
 .PHONY: help
 all: help

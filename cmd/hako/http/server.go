@@ -3,14 +3,45 @@ package http
 import (
 	"context"
 	"errors"
+	"fmt"
+	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
+
+func init() {
+	gin.SetMode(gin.ReleaseMode)
+}
+
+type Server interface {
+	StartAsync()
+	StopAsync()
+	StopNow(timeout time.Duration) error
+}
 
 type server struct {
 	stopChan   chan bool
 	httpServer *http.Server
+}
+
+func NewServer(port int, engine *gin.Engine) Server {
+	if engine == nil {
+		engine = CreateDefaultRouter()
+	}
+
+	httpServer := &http.Server{
+		Addr:    ":" + strconv.Itoa(int(port)),
+		Handler: engine,
+	}
+
+	s := &server{
+		stopChan:   make(chan bool, 1),
+		httpServer: httpServer,
+	}
+
+	return s
 }
 
 func (server *server) StartAsync() {
@@ -53,4 +84,16 @@ func (server *server) StopNow(timeout time.Duration) (err error) {
 		err = errors.New("timeout waiting for server to stop")
 	}
 	return err
+}
+
+func CreateDefaultRouter() *gin.Engine {
+	router := gin.Default()
+	router.Use(gin.Recovery())
+	router.HandleMethodNotAllowed = true
+
+	router.Use(func(c *gin.Context) {
+		log.Printf(fmt.Sprintf("Handling request at %s", c.Request.RequestURI))
+	})
+
+	return router
 }

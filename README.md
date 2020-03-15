@@ -1,33 +1,33 @@
-[![Build Status](https://travis-ci.org/sha1n/echo-server.svg?branch=master)](https://travis-ci.org/sha1n/echo-server) [![Go Report Card](https://goreportcard.com/badge/sha1n/echo-server)](https://goreportcard.com/report/sha1n/echo-server)
+[![Build Status](https://travis-ci.org/sha1n/hako.svg?branch=master)](https://travis-ci.org/sha1n/hako) [![Go Report Card](https://goreportcard.com/badge/sha1n/hako)](https://goreportcard.com/report/sha1n/hako)
 
-# echo-server
+# hako
 Just a simple HTTP echo server with CLI interface for testing...
 
 
 ## Setting up from sources
 ```bash
-git clone git@github.com:sha1n/echo-server.git
-cd echo-server
+git clone git@github.com:sha1n/hako.git
+cd hako
 
 # build the app
 make
 
 # optionally copy the binary to your path
-cp bin/echoserver <~/.local/bin>
+cp bin/hako <~/.local/bin>
 ```
 
 ## Downloading released binaries
 
 **MacOS cURL Example**
 ```bash
-curl -Lf --compressed -o ~/.local/bin/echoserver https://github.com/sha1n/echo-server/releases/download/v0.2/echo-server-darwin-amd64
+curl -Lf --compressed -o ~/.local/bin/hako https://github.com/sha1n/hako/releases/download/v0.2/hako-darwin-amd64
 ```
 
 ## Usage Example
 Terminal A:
 ```bash 
 # run the server
-echoserver start -p 80 --verbose --path /echo/shmecho
+hako start -p 80 --verbose --path /echo/shmecho
 2020/03/15 15:38:45 Registering signal listeners for graceful HTTP server shutdown..
 2020/03/15 15:38:45 Staring HTTP Server on :80
 2020/03/15 15:38:45 Waiting for shutdown signal...
