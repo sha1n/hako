@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"log"
 	"strings"
 )
 
@@ -14,6 +15,10 @@ var Build string
 
 // Version : passed from build environment
 var Version string
+
+func init() {
+	log.SetPrefix("[HAKO] ")
+}
 
 func main() {
 

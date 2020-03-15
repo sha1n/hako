@@ -1,10 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/sha1n/echo-server/cmd/echoserver/http"
-	"github.com/sha1n/echo-server/cmd/echoserver/utils"
+	"github.com/sha1n/hako/cmd/hako/http"
+	"github.com/sha1n/hako/cmd/hako/utils"
 	"io/ioutil"
 	"log"
 	"os"
@@ -29,19 +28,14 @@ func awaitShutdownSig() {
 }
 
 func createHttpServer(port int, additionalEchoPath string, verbose bool) http.Server {
-	serverBuilder := http.
-		NewServer(port).
-		WithGetHandler("/echo", echoHandlerWith(verbose)).
-		WithPostHandler("/echo", echoHandlerWith(verbose))
+	router := http.CreateDefaultRouter()
+	registerHandlers(router, "/echo", echoHandlerWith(verbose))
 
 	if additionalEchoPath != "" {
-		serverBuilder.
-			WithGetHandler(additionalEchoPath, echoHandlerWith(verbose)).
-			WithPostHandler(additionalEchoPath, echoHandlerWith(verbose)).
-			Build()
+		registerHandlers(router, additionalEchoPath, echoHandlerWith(verbose))
 	}
 
-	server := serverBuilder.Build()
+	server := http.NewServer(port, router)
 
 	stopServerAsync := func() {
 		server.StopAsync()
@@ -54,6 +48,16 @@ func createHttpServer(port int, additionalEchoPath string, verbose bool) http.Se
 	return server
 }
 
+func registerHandlers(router *gin.Engine, path string, handler func(ctx *gin.Context)) {
+	router.GET(path, handler)
+	router.POST(path, handler)
+	router.PUT(path, handler)
+	router.DELETE(path, handler)
+	router.PATCH(path, handler)
+	router.HEAD(path, handler)
+	router.OPTIONS(path, handler)
+}
+
 func echoHandlerWith(verbose bool) func(*gin.Context) {
 	if verbose {
 		return func(c *gin.Context) {
@@ -61,7 +65,9 @@ func echoHandlerWith(verbose bool) func(*gin.Context) {
 			if err != nil {
 				log.Println("Failed to read request body:", err)
 			} else {
-				fmt.Printf("Received: %s\n\r", string(bodyBytes))
+				if len(bodyBytes) > 0 {
+					log.Printf("Body: %s\n\r", string(bodyBytes))
+				}
 			}
 
 			_, err = c.Writer.Write(bodyBytes)

@@ -1,4 +1,4 @@
-module github.com/sha1n/echo-server
+module github.com/sha1n/hako
 
 go 1.13
 

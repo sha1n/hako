@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/sha1n/echo-server/cmd/echoserver/utils"
+	"github.com/sha1n/hako/cmd/hako/utils"
 	"github.com/stretchr/testify/assert"
 	"net"
 	"net/http"
@@ -21,11 +21,11 @@ type message struct {
 
 func Test_Stop(t *testing.T) {
 	scope := newServerTestScope()
-	server := scope.newServerBuilder().Build()
+	server := scope.newServer(CreateDefaultRouter())
 	server.StartAsync()
-	scope.awaitPort()
+	assert.NoError(t, scope.awaitPort())
 
-	server.StopNow(time.Second * 3)
+	assert.NoError(t, server.StopNow(time.Second*3))
 
 	_, err := http.Get(scope.serverUrlWith("/"))
 	assert.Error(t, err)
@@ -34,81 +34,30 @@ func Test_Stop(t *testing.T) {
 
 func Test_Start(t *testing.T) {
 	scope := newServerTestScope()
-	server := scope.newServerBuilder().Build()
+	server := scope.newServer(CreateDefaultRouter())
 	defer server.StopAsync()
 
 	server.StartAsync()
-	scope.awaitPort()
+	assert.NoError(t, scope.awaitPort())
 
 	res, err := http.Get(scope.serverUrlWith("/"))
 	assert.NoError(t, err)
 	assert.Equal(t, 404, res.StatusCode)
 }
 
-func Test_ServerShouldReturnCode405ForUnmappedMethodsOfExistingResource(t *testing.T) {
-	scope := newServerTestScope()
-	server := scope.newServerBuilder().
-		WithPostHandler("/post", func(ctx *gin.Context) {
-			ctx.Status(200)
-		}).
-		Build()
-	defer server.StopAsync()
-
-	server.StartAsync()
-	scope.awaitPort()
-
-	res, err := http.Get(scope.serverUrlWith("/post"))
-	assert.NoError(t, err)
-	assert.Equal(t, 405, res.StatusCode)
-}
-
-func Test_GetHandlerShouldWork(t *testing.T) {
-	scope := newServerTestScope()
-	server := scope.newServerBuilder().
-		WithGetHandler("/get", func(ctx *gin.Context) {
-			ctx.Status(200)
-		}).
-		Build()
-	defer server.StopAsync()
-
-	server.StartAsync()
-	scope.awaitPort()
-
-	res, err := http.Get(scope.serverUrlWith("/get"))
-	assert.NoError(t, err)
-	assert.Equal(t, 200, res.StatusCode)
-}
-
-func Test_EchoHandlerShouldReturnInputMessage(t *testing.T) {
+func Test_HttpServiceShouldWork(t *testing.T) {
 	inputMessage := message{utils.RandomString(10)}
 	scope := newServerTestScope()
-	server := scope.newServerBuilder().
-		WithPostHandler("/echo", echoHandler()).
-		Build()
+	server := scope.newServer(engineWithPostHandler("/echo", echoHandler()))
 	defer server.StopAsync()
 
 	server.StartAsync()
-	scope.awaitPort()
+	assert.NoError(t, scope.awaitPort())
 
 	res, err := http.Post(scope.serverUrlWith("/echo"), "application/json", utils.JsonStringReaderFor(inputMessage))
 	assert.NoError(t, err)
 	assert.Equal(t, 200, res.StatusCode)
 	assert.Equal(t, inputMessage, jsonMessageFrom(res))
-}
-
-func Test_EchoHandlerShouldFailIfContentTypeIsNotSupported(t *testing.T) {
-	scope := newServerTestScope()
-	server := scope.newServerBuilder().
-		WithPostHandler("/echo", echoHandler()).
-		Build()
-	defer server.StopAsync()
-
-	server.StartAsync()
-	scope.awaitPort()
-
-	res, err := http.Post(scope.serverUrlWith("/echo"), "text/plain", strings.NewReader(utils.RandomString(10)))
-	assert.NoError(t, err)
-	assert.Equal(t, 400, res.StatusCode)
 }
 
 type scope struct {
@@ -122,8 +71,8 @@ func newServerTestScope() scope {
 	}
 }
 
-func (s scope) newServerBuilder() ServerBuilder {
-	return NewServer(s.port)
+func (s scope) newServer(engine *gin.Engine) Server {
+	return NewServer(s.port, engine)
 }
 
 func (s scope) serverUrlWith(path string) string {
@@ -136,9 +85,9 @@ func (s scope) awaitPort() (err error) {
 	tryConnect := func() (err error) {
 		conn, err := net.DialTimeout("tcp", net.JoinHostPort("", strconv.Itoa(s.port)), time.Second*10)
 		if err != nil {
-			os.Stderr.WriteString(fmt.Sprintf("Error while waiting for tcp port %d. Error: %s\r\n", s.port, err))
+			_, _ = os.Stderr.WriteString(fmt.Sprintf("Error while waiting for tcp port %d. Error: %s\r\n", s.port, err))
 		} else {
-			conn.Close()
+			_ = conn.Close()
 		}
 
 		return err
@@ -153,6 +102,13 @@ func (s scope) awaitPort() (err error) {
 	return err
 }
 
+func engineWithPostHandler(path string, handler func(ctx *gin.Context)) *gin.Engine {
+	router := CreateDefaultRouter()
+	router.POST(path, handler)
+
+	return router
+}
+
 func echoHandler() func(*gin.Context) {
 	return func(ctx *gin.Context) {
 		var input message
@@ -165,7 +121,7 @@ func echoHandler() func(*gin.Context) {
 }
 
 func jsonMessageFrom(response *http.Response) (res message) {
-	json.NewDecoder(response.Body).Decode(&res)
+	_ = json.NewDecoder(response.Body).Decode(&res)
 
 	return res
 }
