@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"strings"
-	//"log"
-	//"os"
 )
 
 // ProgramName : passed from build environment
@@ -38,12 +36,14 @@ func createStartCommand() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			port, _ := cmd.Flags().GetInt("port")
 			additionalPath, _ := cmd.Flags().GetString("path")
+			verbose, _ := cmd.Flags().GetBool("verbose")
 
-			Start(port, normalizePath(additionalPath))
+			Start(port, normalizePath(additionalPath), verbose)
 		},
 	}
 	cmd.Flags().IntP("port", "p", 8080, `Port to listen on. Default is 8080`)
 	cmd.Flags().StringP("path", "", "", `Path of incoming requests`)
+	cmd.Flags().BoolP("verbose", "", false, `Prints the body of every incoming request`)
 
 	return cmd
 }
