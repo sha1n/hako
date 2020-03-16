@@ -13,7 +13,7 @@ cd hako
 make
 
 # optionally copy the binary to your path
-cp bin/hako <~/.local/bin>
+cp bin/hako <~/.local/bin/hako>
 ```
 
 ## Downloading released binaries
