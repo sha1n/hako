@@ -27,7 +27,7 @@ chmod +x ~/.local/bin/hako
 
 ## Usage Example
 
-**Terminal A:
+**Terminal A:**
 ```bash 
 # run the server
 ➜  ~ hako start --verbose --port 8090 --path /echo/shmecho
@@ -42,7 +42,7 @@ chmod +x ~/.local/bin/hako
 [GIN] 2020/03/16 - 09:53:41 | 404 |      12.785µs |             ::1 | HEAD     /non-existing
 ```
 
-**Terminal B:
+**Terminal B:**
 ```bash 
 # posting to an existing URL
 ➜  ~ curl -X POST localhost:8090/echo/shmecho -H "Content-Type: application/json" --data "{'Hello': 'World'}"
