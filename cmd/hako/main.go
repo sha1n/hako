@@ -38,19 +38,30 @@ func createStartCommand() *cobra.Command {
 		Use:   "start",
 		Long:  fmt.Sprintf(``),
 		Short: fmt.Sprintf(``),
-		Run: func(cmd *cobra.Command, args []string) {
-			port, _ := cmd.Flags().GetInt("port")
-			additionalPath, _ := cmd.Flags().GetString("path")
-			verbose, _ := cmd.Flags().GetBool("verbose")
-
-			Start(port, normalizePath(additionalPath), verbose)
-		},
+		Run:   doStart,
 	}
 	cmd.Flags().IntP("port", "p", 8080, `Port to listen on. Default is 8080`)
 	cmd.Flags().StringP("path", "", "", `Path of incoming requests`)
+	cmd.Flags().Int32P("delay", "d", 0, `The minimum delay of each response in milliseconds`)
 	cmd.Flags().BoolP("verbose", "", false, `Prints the body of every incoming request`)
 
 	return cmd
+}
+
+func doStart(cmd *cobra.Command, args []string) {
+	port, _ := cmd.Flags().GetInt("port")
+	delay, _ := cmd.Flags().GetInt32("delay")
+	additionalPath, _ := cmd.Flags().GetString("path")
+	verbose, _ := cmd.Flags().GetBool("verbose")
+
+	config := Config{
+		ServerPort: port,
+		EchoPath:   normalizePath(additionalPath),
+		Verbose:    verbose,
+		Delay:      delay,
+	}
+
+	Start(config)
 }
 
 func normalizePath(path string) string {
