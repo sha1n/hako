@@ -30,28 +30,36 @@ chmod +x ~/.local/bin/hako
 **Terminal A:**
 ```bash 
 # run the server
-➜  ~ hako start --verbose --port 8090 --path /echo/shmecho
-[HAKO] 2020/03/16 09:46:34 Registering signal listeners for graceful HTTP server shutdown..
-[HAKO] 2020/03/16 09:46:34 Staring HTTP Server on :8090
-[HAKO] 2020/03/16 09:46:34 Waiting for shutdown signal...
-[HAKO] 2020/03/16 09:53:39 Handling request at /echo/shmecho
-[HAKO] 2020/03/16 09:53:39 Body: {'Hello': 'World'}
+➜  ~ hako start -p 8090 --path /echo/shmecho --delay 1 --verbose --verbose-headers
+[HAKO] 2020/03/17 12:32:36 Registering signal listeners for graceful HTTP server shutdown..
+[HAKO] 2020/03/17 12:32:36 Staring HTTP Server on :8090
+[HAKO] 2020/03/17 12:32:36 Waiting for shutdown signal...
+[HAKO] 2020/03/17 12:32:38 Handling request at /echo/shmecho
+[HAKO] 2020/03/17 12:32:38 Received headers:
 
-[GIN] 2020/03/16 - 09:53:39 | 200 |      54.324µs |             ::1 | POST     /echo/shmecho
-[HAKO] 2020/03/16 09:53:41 Handling request at /non-existing
-[GIN] 2020/03/16 - 09:53:41 | 404 |      12.785µs |             ::1 | HEAD     /non-existing
+User-Agent : curl/7.64.1
+Accept : */*
+Content-Type : application/json
+Content-Length : 18
+
+[HAKO] 2020/03/17 12:32:38 Received body:
+
+{'Hello': 'World'}
+
+[HAKO] 2020/03/17 12:32:38 Delaying response in 1 millis
+[GIN] 2020/03/17 - 12:32:38 | 200 |    1.328925ms |             ::1 | POST     /echo/shmecho
+[HAKO] 2020/03/17 12:33:44 Handling request at /non-existing
+[GIN] 2020/03/17 - 12:33:44 | 404 |      14.822µs |             ::1 | HEAD     /non-existing
 ```
 
 **Terminal B:**
 ```bash 
 # posting to an existing URL
 ➜  ~ curl -X POST localhost:8090/echo/shmecho -H "Content-Type: application/json" --data "{'Hello': 'World'}"
-{'Hello': 'World'}%
-
-# heading to a non-existing URL
+{'Hello': 'World'}%                                                                                                                                                                                                                                         # heading to a non-existing URL
 ➜  ~ curl -I localhost:8090/non-existing
 HTTP/1.1 404 Not Found
 Content-Type: text/plain
-Date: Mon, 16 Mar 2020 07:53:41 GMT
+Date: Tue, 17 Mar 2020 10:33:44 GMT
 Content-Length: 18
 ```
