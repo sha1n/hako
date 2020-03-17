@@ -28,12 +28,12 @@ func handler(verbose bool, verboseHeaders bool, doBefore func()) func(*gin.Conte
 		if err != nil {
 			log.Println(console.Red("Failed to read request body: %s", err.Error()))
 		} else {
-			if verbose && len(bodyBytes) > 0 {
-				printBody(bodyBytes)
-			}
-
 			if verboseHeaders {
 				printHeaders(c)
+			}
+
+			if verbose && len(bodyBytes) > 0 {
+				printBody(bodyBytes)
 			}
 		}
 
