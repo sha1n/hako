@@ -1,17 +1,13 @@
-package main
+package startcmd
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/sha1n/hako/cmd/hako/console"
 	"github.com/sha1n/hako/cmd/hako/http"
 	"github.com/sha1n/hako/cmd/hako/utils"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 )
 
 type Config struct {
@@ -60,10 +56,10 @@ func createHttpServer(config Config) http.Server {
 
 func createGinEngine(config Config) *gin.Engine {
 	router := http.CreateDefaultRouter()
-	registerHandlers(router, "/echo", echoHandlerWith(config.Verbose, config.VerboseHeaders, config.Delay))
+	registerHandlers(router, "/echo", EchoHandlerWith(config.Verbose, config.VerboseHeaders, config.Delay))
 
 	if config.EchoPath != "" {
-		registerHandlers(router, config.EchoPath, echoHandlerWith(config.Verbose, config.VerboseHeaders, config.Delay))
+		registerHandlers(router, config.EchoPath, EchoHandlerWith(config.Verbose, config.VerboseHeaders, config.Delay))
 	}
 
 	return router
@@ -77,44 +73,4 @@ func registerHandlers(router *gin.Engine, path string, handler func(ctx *gin.Con
 	router.PATCH(path, handler)
 	router.HEAD(path, handler)
 	router.OPTIONS(path, handler)
-}
-
-func echoHandlerWith(verbose bool, verboseHeaders bool, delay int32) func(*gin.Context) {
-	maybeDelay := func() {
-		if delay > 0 {
-			log.Printf("Delaying response in %d millis", delay)
-			time.Sleep(time.Duration(delay) * time.Millisecond)
-		}
-	}
-
-	return func(c *gin.Context) {
-		// todo: in case verbose is off, we definitely don't have to read the entire body into memory.
-		bodyBytes, err := ioutil.ReadAll(c.Request.Body)
-		if err != nil {
-			log.Println("Failed to read request body:", err)
-		} else {
-			// todo: this ignore encoding and assumes the body is printable.. maybe we can do better.
-			if verbose && len(bodyBytes) > 0 {
-				log.Printf("Body: %s\n\r", string(bodyBytes))
-			}
-			if verboseHeaders {
-				var headersStr = ""
-				for header := range c.Request.Header {
-					headersStr += fmt.Sprintf(
-						"%s : %s\n\r", console.Bold(header), console.Bold(console.Cyan(c.Request.Header.Get(header))))
-				}
-
-				log.Printf(`Received headers:
-%s
-`, headersStr)
-			}
-		}
-
-		maybeDelay()
-
-		_, err = c.Writer.Write(bodyBytes)
-		if err != nil {
-			log.Println("Failed to echo request body:", err)
-		}
-	}
 }

@@ -1,4 +1,4 @@
-package main
+package startcmd
 
 import (
 	"github.com/sha1n/hako/cmd/hako/utils"
