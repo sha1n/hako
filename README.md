@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/sha1n/hako.svg?branch=master)](https://travis-ci.org/sha1n/hako) [![Go Report Card](https://goreportcard.com/badge/sha1n/hako)](https://goreportcard.com/report/sha1n/hako)
+[![Build Status](https://travis-ci.org/sha1n/hako.svg?branch=master)](https://travis-ci.org/sha1n/hako) [![Go Report Card](https://goreportcard.com/badge/sha1n/hako)](https://goreportcard.com/report/sha1n/hako) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # hako
 Just a simple HTTP echo server with CLI interface for testing...
