@@ -39,6 +39,10 @@ func handler(verbose bool, verboseHeaders bool, doBefore func()) func(*gin.Conte
 
 		doBefore()
 
+		requestContentType := c.GetHeader("Content-Type")
+		if requestContentType != "" {
+			c.Writer.Header().Set("Content-Type", c.GetHeader("Content-Type"))
+		}
 		_, err = c.Writer.Write(bodyBytes)
 		if err != nil {
 			log.Println(console.Red("Failed to echo request body: %s", err.Error()))

@@ -23,6 +23,21 @@ func Test_StartWithDefaults(t *testing.T) {
 	assert.Equal(t, "default-echo", w.Body.String())
 }
 
+func Test_ResponseContentTypeIsEchoedAsWell(t *testing.T) {
+	config, err := newConfigWith("", 0)
+	assert.NoError(t, err)
+
+	router := createGinEngine(config)
+	w, req := requestWith("POST", "/echo", "{'j': 'son'}")
+	req.Header.Set("Content-Type", "application/json")
+
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, "application/json", w.Header().Get("Content-Type"))
+	assert.Equal(t, 200, w.Code)
+	assert.Equal(t, "{'j': 'son'}", w.Body.String())
+}
+
 func Test_StartWithUndefinedPath(t *testing.T) {
 	config, err := newConfigWith("", 0)
 	assert.NoError(t, err)
