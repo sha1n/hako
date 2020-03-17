@@ -21,7 +21,7 @@ type message struct {
 
 func Test_Stop(t *testing.T) {
 	scope := newServerTestScope()
-	server := scope.newServer(CreateDefaultRouter())
+	server := scope.newServer(NewDefaultEngine())
 	server.StartAsync()
 	assert.NoError(t, scope.awaitPort())
 
@@ -34,7 +34,7 @@ func Test_Stop(t *testing.T) {
 
 func Test_Start(t *testing.T) {
 	scope := newServerTestScope()
-	server := scope.newServer(CreateDefaultRouter())
+	server := scope.newServer(NewDefaultEngine())
 	defer server.StopAsync()
 
 	server.StartAsync()
@@ -103,7 +103,7 @@ func (s scope) awaitPort() (err error) {
 }
 
 func engineWithPostHandler(path string, handler func(ctx *gin.Context)) *gin.Engine {
-	router := CreateDefaultRouter()
+	router := NewDefaultEngine()
 	router.POST(path, handler)
 
 	return router

@@ -28,7 +28,7 @@ type server struct {
 
 func NewServer(port int, engine *gin.Engine) Server {
 	if engine == nil {
-		engine = CreateDefaultRouter()
+		engine = NewDefaultEngine()
 	}
 
 	httpServer := &http.Server{
@@ -86,14 +86,25 @@ func (server *server) StopNow(timeout time.Duration) (err error) {
 	return err
 }
 
-func CreateDefaultRouter() *gin.Engine {
+func NewDefaultEngine() *gin.Engine {
 	router := gin.Default()
+	router.HandleMethodNotAllowed = true
+
+	router.Use(basicRequestLoggerMiddleware)
+
+	return router
+}
+
+func NewSilentEngine() *gin.Engine {
+	router := gin.New()
 	router.Use(gin.Recovery())
 	router.HandleMethodNotAllowed = true
 
-	router.Use(func(c *gin.Context) {
-		log.Printf(fmt.Sprintf("Handling request at %s", c.Request.RequestURI))
-	})
+	router.Use(basicRequestLoggerMiddleware)
 
 	return router
+}
+
+func basicRequestLoggerMiddleware(c *gin.Context) {
+	log.Printf(fmt.Sprintf("Handling request at %s", c.Request.RequestURI))
 }
