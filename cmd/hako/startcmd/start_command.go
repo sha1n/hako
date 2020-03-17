@@ -55,7 +55,12 @@ func createHttpServer(config Config) http.Server {
 }
 
 func createGinEngine(config Config) *gin.Engine {
-	router := http.CreateDefaultRouter()
+	var router *gin.Engine
+	if config.Verbose {
+		router = http.NewDefaultEngine()
+	} else {
+		router = http.NewSilentEngine()
+	}
 	registerHandlers(router, "/echo", EchoHandlerWith(config.Verbose, config.VerboseHeaders, config.Delay))
 
 	if config.EchoPath != "" {

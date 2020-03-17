@@ -13,7 +13,9 @@ import (
 func EchoHandlerWith(verbose bool, verboseHeaders bool, delay int32) func(*gin.Context) {
 	maybeDelay := func() {
 		if delay > 0 {
-			log.Printf(console.Green("Delaying response in %d millis", delay))
+			if verbose {
+				log.Printf(console.Green("Delaying response in %d millis", delay))
+			}
 			time.Sleep(time.Duration(delay) * time.Millisecond)
 		}
 	}
