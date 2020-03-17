@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/sha1n/hako/cmd/hako/startcmd"
 	"github.com/spf13/cobra"
 	"log"
 	"strings"
@@ -56,7 +57,7 @@ func doStart(cmd *cobra.Command, args []string) {
 	verbose, _ := cmd.Flags().GetBool("verbose")
 	verboseHeaders, _ := cmd.Flags().GetBool("verbose-headers")
 
-	config := Config{
+	config := startcmd.Config{
 		ServerPort:     port,
 		EchoPath:       normalizePath(additionalPath),
 		Verbose:        verbose,
@@ -64,7 +65,7 @@ func doStart(cmd *cobra.Command, args []string) {
 		Delay:          delay,
 	}
 
-	Start(config)
+	startcmd.Start(config)
 }
 
 func normalizePath(path string) string {
