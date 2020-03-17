@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/sha1n/hako/cmd/hako/console"
 	"github.com/sha1n/hako/cmd/hako/http"
 	"github.com/sha1n/hako/cmd/hako/utils"
 	"io/ioutil"
@@ -13,10 +15,11 @@ import (
 )
 
 type Config struct {
-	ServerPort int
-	EchoPath   string
-	Verbose    bool
-	Delay      int32
+	ServerPort     int
+	EchoPath       string
+	Verbose        bool
+	VerboseHeaders bool
+	Delay          int32
 }
 
 func StartAsync(config Config) {
@@ -57,10 +60,10 @@ func createHttpServer(config Config) http.Server {
 
 func createGinEngine(config Config) *gin.Engine {
 	router := http.CreateDefaultRouter()
-	registerHandlers(router, "/echo", echoHandlerWith(config.Verbose, config.Delay))
+	registerHandlers(router, "/echo", echoHandlerWith(config.Verbose, config.VerboseHeaders, config.Delay))
 
 	if config.EchoPath != "" {
-		registerHandlers(router, config.EchoPath, echoHandlerWith(config.Verbose, config.Delay))
+		registerHandlers(router, config.EchoPath, echoHandlerWith(config.Verbose, config.VerboseHeaders, config.Delay))
 	}
 
 	return router
@@ -76,7 +79,7 @@ func registerHandlers(router *gin.Engine, path string, handler func(ctx *gin.Con
 	router.OPTIONS(path, handler)
 }
 
-func echoHandlerWith(verbose bool, delay int32) func(*gin.Context) {
+func echoHandlerWith(verbose bool, verboseHeaders bool, delay int32) func(*gin.Context) {
 	maybeDelay := func() {
 		if delay > 0 {
 			log.Printf("Delaying response in %d millis", delay)
@@ -93,6 +96,17 @@ func echoHandlerWith(verbose bool, delay int32) func(*gin.Context) {
 			// todo: this ignore encoding and assumes the body is printable.. maybe we can do better.
 			if verbose && len(bodyBytes) > 0 {
 				log.Printf("Body: %s\n\r", string(bodyBytes))
+			}
+			if verboseHeaders {
+				var headersStr = ""
+				for header := range c.Request.Header {
+					headersStr += fmt.Sprintf(
+						"%s : %s\n\r", console.Bold(header), console.Bold(console.Cyan(c.Request.Header.Get(header))))
+				}
+
+				log.Printf(`Received headers:
+%s
+`, headersStr)
 			}
 		}
 
