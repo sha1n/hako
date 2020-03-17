@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/sha1n/hako.svg?branch=master)](https://travis-ci.org/sha1n/hako) [![Go Report Card](https://goreportcard.com/badge/sha1n/hako)](https://goreportcard.com/report/sha1n/hako) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Release](https://img.shields.io/github/release/sha1n/hako.svg?style=flat-square)](https://github.com/sha1n/hako/releases)
 
 # Hako
 Hako is an HTTP echo server with a CLI interface that provides some extra features. Hako has been developed to help me develop and test one of my projects and since the need for such utility keeps popping every few years, I thought it would be nice to share it with others.
