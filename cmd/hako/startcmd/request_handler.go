@@ -70,6 +70,6 @@ func printBody(bodyBytes []byte) {
 %s
 
 `,
-		console.Yellow(strings.TrimSpace(string(bodyBytes))),
+		console.Yellow(strings.TrimSpace(strings.ReplaceAll(string(bodyBytes), "%", "%%"))),
 	)
 }
