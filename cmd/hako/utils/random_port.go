@@ -9,9 +9,9 @@ func RandomFreePort() (port int, err error) {
 
 	if err == nil {
 		listener, err := net.ListenTCP("tcp", addr)
-		port = listener.Addr().(*net.TCPAddr).Port
 		if err == nil {
-			err = listener.Close()
+			port = listener.Addr().(*net.TCPAddr).Port
+			_ = listener.Close()
 		}
 	}
 

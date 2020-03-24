@@ -14,12 +14,12 @@ func Test_RandomFreePortShouldFindAFreePort(t *testing.T) {
 	assert.NoError(t, tryLister(freePort))
 }
 
-func tryLister(port int) error {
+func tryLister(port int) (err error) {
 	addr, err := net.ResolveTCPAddr("tcp", net.JoinHostPort("localhost", strconv.Itoa(port)))
 	if err == nil {
 		listener, err := net.ListenTCP("tcp", addr)
 		if err == nil {
-			err = listener.Close()
+			_ = listener.Close()
 		}
 	}
 
