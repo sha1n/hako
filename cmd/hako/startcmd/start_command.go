@@ -10,6 +10,7 @@ import (
 	"syscall"
 )
 
+// Config start command configuration
 type Config struct {
 	ServerPort     int
 	EchoPath       string
@@ -18,11 +19,13 @@ type Config struct {
 	Delay          int32
 }
 
+// StartAsync starts an echo server in the background and returns immediately.
 func StartAsync(config Config) {
 	server := createHttpServer(config)
 	server.StartAsync()
 }
 
+// Start starts an echo server in the background and awaits shutdown signal.
 func Start(config Config) {
 	StartAsync(config)
 
@@ -61,10 +64,10 @@ func createGinEngine(config Config) *gin.Engine {
 	} else {
 		router = http.NewSilentEngine()
 	}
-	registerHandlers(router, "/echo", EchoHandlerWith(config.Verbose, config.VerboseHeaders, config.Delay))
+	registerHandlers(router, "/echo", echoHandlerWith(config.Verbose, config.VerboseHeaders, config.Delay))
 
 	if config.EchoPath != "" {
-		registerHandlers(router, config.EchoPath, EchoHandlerWith(config.Verbose, config.VerboseHeaders, config.Delay))
+		registerHandlers(router, config.EchoPath, echoHandlerWith(config.Verbose, config.VerboseHeaders, config.Delay))
 	}
 
 	return router
