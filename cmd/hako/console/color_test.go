@@ -15,7 +15,7 @@ var styleFunctions = [...]func(string, ...interface{}) string{
 	Cyan,
 }
 
-var allAsciiCodes = RESET + REVERSE + BOLD + GREEN + YELLOW + RED + CYAN
+var allAsciiCodes = reset + reserve + bold + green + yellow + red + cyan
 
 func Test_FormatArgumentsPassThrough(t *testing.T) {
 
@@ -30,6 +30,6 @@ func Test_AllEndWithResetCode(t *testing.T) {
 
 	for mi := range styleFunctions {
 		formattedString := styleFunctions[mi]("Hello %s", "World")
-		assert.True(t, strings.HasSuffix(formattedString, RESET))
+		assert.True(t, strings.HasSuffix(formattedString, reset))
 	}
 }

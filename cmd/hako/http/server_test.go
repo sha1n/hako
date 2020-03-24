@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sha1n/hako/cmd/hako/utils"
 	"github.com/stretchr/testify/assert"
+	"io"
 	"net"
 	"net/http"
 	"os"
@@ -54,7 +55,7 @@ func Test_HttpServiceShouldWork(t *testing.T) {
 	server.StartAsync()
 	assert.NoError(t, scope.awaitPort())
 
-	res, err := http.Post(scope.serverUrlWith("/echo"), "application/json", utils.JsonStringReaderFor(inputMessage))
+	res, err := http.Post(scope.serverUrlWith("/echo"), "application/json", jsonStringReaderFor(inputMessage))
 	assert.NoError(t, err)
 	assert.Equal(t, 200, res.StatusCode)
 	assert.Equal(t, inputMessage, jsonMessageFrom(res))
@@ -124,4 +125,9 @@ func jsonMessageFrom(response *http.Response) (res message) {
 	_ = json.NewDecoder(response.Body).Decode(&res)
 
 	return res
+}
+
+func jsonStringReaderFor(o interface{}) io.Reader {
+	bytes, _ := json.Marshal(o)
+	return strings.NewReader(string(bytes))
 }

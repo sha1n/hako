@@ -4,6 +4,7 @@ import (
 	"net"
 )
 
+// RandomFreePort attempts to find and return a free TCP port number.
 func RandomFreePort() (port int, err error) {
 	addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
 
