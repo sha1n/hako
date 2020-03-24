@@ -28,14 +28,14 @@ PID := $(GOBUILD)/.$(PROJECTNAME).pid
 # Make is verbose in Linux. Make it silent.
 MAKEFLAGS += --silent
 
-default: install format lint test compile
+default: install format test compile
 
 ## install: Install missing dependencies.
 install: go-get
 
 format: go-format
 
-lint: go-lint
+#lint: go-lint
 
 ## compile: Compile the binary.
 compile:
@@ -54,12 +54,13 @@ clean:
 	@-$(MAKE) go-clean
 
 go-lint:
+	# TODO: golint is no longer available - need to download or build it from sources here.
 	@echo "  >  Linting source files..."
-	 gofmt -d $(GOFILES)
+	golint $(GOFILES)
 
 go-format:
 	@echo "  >  Formating source files..."
-	 gofmt -s -w $(GOFILES)
+	gofmt -s -w $(GOFILES)
 
 go-compile: go-get go-build-linux go-build-darwin go-build-windows
 
