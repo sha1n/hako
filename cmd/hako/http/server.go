@@ -15,6 +15,7 @@ func init() {
 	gin.SetMode(gin.ReleaseMode)
 }
 
+// Server is a formal HTTP interface
 type Server interface {
 	StartAsync()
 	StopAsync()
@@ -26,6 +27,7 @@ type server struct {
 	httpServer *http.Server
 }
 
+// NewServer creates a new Server and returns it
 func NewServer(port int, engine *gin.Engine) Server {
 	if engine == nil {
 		engine = NewDefaultEngine()
@@ -44,6 +46,7 @@ func NewServer(port int, engine *gin.Engine) Server {
 	return s
 }
 
+// StartAsync starts the server and returns immediately
 func (server *server) StartAsync() {
 	log.Printf("Staring HTTP Server on %s", server.httpServer.Addr)
 
@@ -68,10 +71,12 @@ func (server *server) StartAsync() {
 	}()
 }
 
+// StopAsync sends a stop signal to the server and returns immediately
 func (server *server) StopAsync() {
 	server.stopChan <- true
 }
 
+// StopNow sends a stop signal to the server and waits for it to stop
 func (server *server) StopNow(timeout time.Duration) (err error) {
 	server.StopAsync()
 	timer := time.NewTimer(timeout)
@@ -86,6 +91,7 @@ func (server *server) StopNow(timeout time.Duration) (err error) {
 	return err
 }
 
+// NewDefaultEngine creates and returns a new default Gin router
 func NewDefaultEngine() *gin.Engine {
 	router := gin.Default()
 	router.HandleMethodNotAllowed = true
@@ -95,6 +101,7 @@ func NewDefaultEngine() *gin.Engine {
 	return router
 }
 
+// NewSilentEngine creates and returns a new basic Gin router with no logging
 func NewSilentEngine() *gin.Engine {
 	router := gin.New()
 	router.Use(gin.Recovery())

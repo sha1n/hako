@@ -18,7 +18,7 @@ func init() {
 	startListening()
 }
 
-// Registers a hook for system call signals SIGTERM and SIGKILL
+// RegisterShutdownHook registers a hook for system call signals SIGTERM and SIGKILL
 func RegisterShutdownHook(hook Hook) {
 	mutex.Lock()
 	defer mutex.Unlock()
@@ -26,7 +26,7 @@ func RegisterShutdownHook(hook Hook) {
 	hooks.PushBack(hook)
 }
 
-// Returns a hook that only invokes the specified function if the received signal matches the specified one.
+// NewSignalHook returns a hook that only invokes the specified function if the received signal matches the specified one.
 // Supported signals are SIGTERM and SIGKILL
 func NewSignalHook(filter os.Signal, f func()) Hook {
 	return func(sig os.Signal) {

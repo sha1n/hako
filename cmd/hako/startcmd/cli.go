@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// CreateCommand creates a new cobra Command for the start CLI command.
 func CreateCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "start",

@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func EchoHandlerWith(verbose bool, verboseHeaders bool, delay int32) func(*gin.Context) {
+func echoHandlerWith(verbose bool, verboseHeaders bool, delay int32) func(*gin.Context) {
 	maybeDelay := func() {
 		if delay > 0 {
 			if verbose {
