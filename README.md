@@ -32,9 +32,14 @@ curl -Lf --compressed -o <~/.local/bin/hako> https://github.com/sha1n/hako/relea
 chmod +x <~/.local/bin/hako>
 ```
 
-## Docker Image**
+## Pulling a Public Docker Image
 ```
 docker pull sha1n/hako
+
+# you can then start the server using 
+docker run sha1n/hako
+# or with custom arguments 
+docker run -p 8090:8080 sha1n/hako /bin/sh -c "/opt/hako start --path /echo/shmecho --delay 1 --verbose --verbose-headers"
 ```
 
 ## Usage Example
