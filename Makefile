@@ -30,6 +30,8 @@ MAKEFLAGS += --silent
 
 default: install format test compile
 
+build-docker: go-build-linux build-docker-image
+
 ## install: Install missing dependencies.
 install: go-get
 
@@ -93,6 +95,10 @@ go-install:
 go-clean:
 	@echo "  >  Cleaning build cache"
 	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go clean ./cmd/hako
+
+build-docker-image:
+	@echo "  >  Building docker image..."
+	docker build -t hako:latest .
 
 .PHONY: help
 all: help

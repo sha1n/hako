@@ -17,6 +17,12 @@ make
 cp bin/hako <~/.local/bin/hako>
 ```
 
+## Building docker image from sources
+Use the following command to build a docker image from the local sources. The image will be tagged `hako:latest`.
+```bash 
+make build-docker
+```
+
 ## Downloading released binaries
 
 **MacOS cURL Example**
