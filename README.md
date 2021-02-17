@@ -17,6 +17,12 @@ make
 cp bin/hako <~/.local/bin/hako>
 ```
 
+## Building docker image from sources
+Use the following command to build a docker image from the local sources. The image will be tagged `hako:latest`.
+```bash 
+make build-docker
+```
+
 ## Downloading released binaries
 
 **MacOS cURL Example**
@@ -26,6 +32,16 @@ curl -Lf --compressed -o <~/.local/bin/hako> https://github.com/sha1n/hako/relea
 chmod +x <~/.local/bin/hako>
 ```
 
+## Pulling a Public Docker Image
+```
+docker pull sha1n/hako
+
+# you can then start the server using 
+docker run sha1n/hako
+# or with custom arguments 
+docker run -p 8090:8080 sha1n/hako /bin/sh -c "/opt/hako start --path /echo/shmecho --delay 1 --verbose --verbose-headers"
+```
+
 ## Usage Example
 See usage examples below. Use `hako --help` for help.
 
@@ -33,6 +49,8 @@ See usage examples below. Use `hako --help` for help.
 ```bash 
 # run the server
 ➜  ~ hako start -p 8090 --path /echo/shmecho --delay 1 --verbose --verbose-headers
+# or using the published docker image
+➜  ~ docker run -p 8090:8080 sha1n/hako /bin/sh -c "/opt/hako start --path /echo/shmecho --delay 1 --verbose --verbose-headers"
 [HAKO] 2020/03/17 12:32:36 Registering signal listeners for graceful HTTP server shutdown..
 [HAKO] 2020/03/17 12:32:36 Staring HTTP Server on :8090
 [HAKO] 2020/03/17 12:32:36 Waiting for shutdown signal...
