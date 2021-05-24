@@ -98,7 +98,8 @@ go-clean:
 
 build-docker-image:
 	@echo "  >  Building docker image..."
-	docker build -t hako:latest .
+	docker build -t sha1n/$(PROJECTNAME):latest .
+	docker tag sha1n/$(PROJECTNAME):latest sha1n/$(PROJECTNAME):$(VERSION:v%=%)
 
 .PHONY: help
 all: help
