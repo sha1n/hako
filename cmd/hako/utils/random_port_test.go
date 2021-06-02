@@ -1,13 +1,14 @@
 package utils
 
 import (
-	"github.com/stretchr/testify/assert"
 	"net"
 	"strconv"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func Test_RandomFreePortShouldFindAFreePort(t *testing.T) {
+func TestRandomFreePortShouldFindAFreePort(t *testing.T) {
 	freePort, err := RandomFreePort()
 
 	assert.NoError(t, err)

@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func Test_StartWithDefaults(t *testing.T) {
+func TestStartWithDefaults(t *testing.T) {
 	config, err := newConfigWith("", 0)
 	assert.NoError(t, err)
 
@@ -23,7 +23,7 @@ func Test_StartWithDefaults(t *testing.T) {
 	assert.Equal(t, "default-echo", w.Body.String())
 }
 
-func Test_ResponseContentTypeIsEchoedAsWell(t *testing.T) {
+func TestResponseContentTypeIsEchoedAsWell(t *testing.T) {
 	config, err := newConfigWith("", 0)
 	assert.NoError(t, err)
 
@@ -38,7 +38,7 @@ func Test_ResponseContentTypeIsEchoedAsWell(t *testing.T) {
 	assert.Equal(t, "{'j': 'son'}", w.Body.String())
 }
 
-func Test_StartWithUndefinedPath(t *testing.T) {
+func TestStartWithUndefinedPath(t *testing.T) {
 	config, err := newConfigWith("", 0)
 	assert.NoError(t, err)
 
@@ -50,7 +50,7 @@ func Test_StartWithUndefinedPath(t *testing.T) {
 	assert.Equal(t, 404, w.Code)
 }
 
-func Test_StartWithCustomPath(t *testing.T) {
+func TestStartWithCustomPath(t *testing.T) {
 	config, err := newConfigWith("/custom", 0)
 	assert.NoError(t, err)
 
@@ -63,7 +63,7 @@ func Test_StartWithCustomPath(t *testing.T) {
 	assert.Equal(t, "custom-echo", w.Body.String())
 }
 
-func Test_StartWithDelay(t *testing.T) {
+func TestStartWithDelay(t *testing.T) {
 	var delay int32 = 100
 	config, err := newConfigWith("/delay", delay)
 	assert.NoError(t, err)
@@ -85,7 +85,7 @@ func newConfigWith(path string, delay int32) (config Config, err error) {
 	config = Config{
 		ServerPort: port,
 		Delay:      delay,
-		Verbose:    false,
+		Verbose:    time.Now().Nanosecond()%2 == 0,
 		EchoPath:   path,
 	}
 

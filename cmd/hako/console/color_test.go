@@ -1,9 +1,10 @@
 package console
 
 import (
-	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var styleFunctions = [...]func(string, ...interface{}) string{
@@ -17,7 +18,7 @@ var styleFunctions = [...]func(string, ...interface{}) string{
 
 var allAsciiCodes = reset + reserve + bold + green + yellow + red + cyan
 
-func Test_FormatArgumentsPassThrough(t *testing.T) {
+func TestFormatArgumentsPassThrough(t *testing.T) {
 
 	for mi := range styleFunctions {
 		formattedString := styleFunctions[mi]("Hello %s", "World")
@@ -26,7 +27,7 @@ func Test_FormatArgumentsPassThrough(t *testing.T) {
 	}
 }
 
-func Test_AllEndWithResetCode(t *testing.T) {
+func TestAllEndWithResetCode(t *testing.T) {
 
 	for mi := range styleFunctions {
 		formattedString := styleFunctions[mi]("Hello %s", "World")
