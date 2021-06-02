@@ -48,7 +48,7 @@ func TestStart(t *testing.T) {
 }
 
 func TestHttpServiceShouldWork(t *testing.T) {
-	inputMessage := message{test.RandomString(10)}
+	inputMessage := message{test.RandomStringN(10)}
 	scope := newServerTestScope()
 	server := scope.newServer(engineWithPostHandler("/echo", echoHandler()))
 	defer server.StopAsync()
