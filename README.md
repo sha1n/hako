@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.com/sha1n/hako.svg?branch=master)](https://travis-ci.com/sha1n/hako) 
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/sha1n/hako)
 [![Go Report Card](https://goreportcard.com/badge/sha1n/hako)](https://goreportcard.com/report/sha1n/hako) 
+[![Coverage Status](https://coveralls.io/repos/github/sha1n/hako/badge.svg?branch=master)](https://coveralls.io/github/sha1n/hako?branch=master)
 [![Release](https://img.shields.io/github/release/sha1n/hako.svg?style=flat-square)](https://github.com/sha1n/hako/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Release Drafter](https://github.com/sha1n/hako/actions/workflows/release-drafter.yml/badge.svg)](https://github.com/sha1n/hako/actions/workflows/release-drafter.yml)
