@@ -8,6 +8,7 @@ import (
 	"strings"
 	"syscall"
 
+	clib "github.com/sha1n/clib/pkg"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 )
@@ -16,8 +17,8 @@ import (
 func CreateStartCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "start",
-		Long:  fmt.Sprintf(``),
-		Short: fmt.Sprintf(``),
+		Long:  fmt.Sprintf(`starts the server`),
+		Short: fmt.Sprintf(`starts the server`),
 		Run:   doStart,
 	}
 	cmd.Flags().IntP("port", "p", 8080, `Port to listen on. Default is 8080`)
@@ -102,8 +103,8 @@ func createHTTPServer(config Config) Server {
 	}
 
 	log.Println("Registering signal listeners for graceful HTTP server shutdown..")
-	RegisterShutdownHook(NewSignalHook(syscall.SIGTERM, stopServerAsync))
-	RegisterShutdownHook(NewSignalHook(syscall.SIGKILL, stopServerAsync))
+	clib.RegisterShutdownHook(clib.NewSignalHook(syscall.SIGTERM, stopServerAsync))
+	clib.RegisterShutdownHook(clib.NewSignalHook(syscall.SIGKILL, stopServerAsync))
 
 	return server
 }
