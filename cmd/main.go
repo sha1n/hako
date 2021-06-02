@@ -44,7 +44,7 @@ Build label: %s`, Version, Build),
 	rootCmd.SetVersionTemplate(`{{printf "%s" .Version}}`)
 
 	rootCmd.AddCommand(internal.CreateStartCommand())
-	rootCmd.AddCommand(clib.CreateUpdateCommand(GitHubOwner, GitHubRepoName, Version, ProgramName, clib.NewIOContext()))
+	rootCmd.AddCommand(clib.CreateUpdateCommand(GitHubOwner, GitHubRepoName, Version, ProgramName))
 
 	_ = rootCmd.Execute()
 }
