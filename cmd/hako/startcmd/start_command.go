@@ -21,7 +21,7 @@ type Config struct {
 
 // StartAsync starts an echo server in the background and returns immediately.
 func StartAsync(config Config) {
-	server := createHttpServer(config)
+	server := createHTTPServer(config)
 	server.StartAsync()
 }
 
@@ -41,7 +41,7 @@ func awaitShutdownSig() {
 	<-quitChannel
 }
 
-func createHttpServer(config Config) http.Server {
+func createHTTPServer(config Config) http.Server {
 	router := createGinEngine(config)
 
 	server := http.NewServer(config.ServerPort, router)

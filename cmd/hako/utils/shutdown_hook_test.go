@@ -1,19 +1,20 @@
 package utils
 
 import (
-	"github.com/stretchr/testify/assert"
 	"os"
 	"sync"
 	"syscall"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func Test_ShutdownHookShouldExecuteAllHookWhenSIGTERMIsReceived(t *testing.T) {
+func TestShutdownHookShouldExecuteAllHookWhenSIGTERMIsReceived(t *testing.T) {
 	testWithSignal(t, syscall.SIGTERM)
 }
 
-func Test_ShutdownHookShouldExecuteAllHookWhenSIGKILLIsReceived(t *testing.T) {
+func TestShutdownHookShouldExecuteAllHookWhenSIGKILLIsReceived(t *testing.T) {
 	testWithSignal(t, syscall.SIGKILL)
 }
 

@@ -3,9 +3,6 @@ package http
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/sha1n/hako/cmd/hako/utils"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"net"
 	"net/http"
@@ -14,13 +11,17 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/sha1n/hako/cmd/hako/utils"
+	"github.com/stretchr/testify/assert"
 )
 
 type message struct {
 	Value string `json:"value" binding:"required"`
 }
 
-func Test_Stop(t *testing.T) {
+func TestStop(t *testing.T) {
 	scope := newServerTestScope()
 	server := scope.newServer(NewDefaultEngine())
 	server.StartAsync()
@@ -33,7 +34,7 @@ func Test_Stop(t *testing.T) {
 	assert.True(t, strings.Contains(err.Error(), "connection refused"))
 }
 
-func Test_Start(t *testing.T) {
+func TestStart(t *testing.T) {
 	scope := newServerTestScope()
 	server := scope.newServer(NewDefaultEngine())
 	defer server.StopAsync()
@@ -46,7 +47,7 @@ func Test_Start(t *testing.T) {
 	assert.Equal(t, 404, res.StatusCode)
 }
 
-func Test_HttpServiceShouldWork(t *testing.T) {
+func TestHttpServiceShouldWork(t *testing.T) {
 	inputMessage := message{utils.RandomString(10)}
 	scope := newServerTestScope()
 	server := scope.newServer(engineWithPostHandler("/echo", echoHandler()))

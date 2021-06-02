@@ -1,13 +1,14 @@
 package utils
 
 import (
-	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func Test_RandomString(t *testing.T) {
+func TestRandomString(t *testing.T) {
 	length := randomLength()
 	randomString := RandomString(length)
 
