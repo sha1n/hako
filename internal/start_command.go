@@ -8,8 +8,8 @@ import (
 	"strings"
 	"syscall"
 
-	clib "github.com/sha1n/clib/pkg"
 	"github.com/gin-gonic/gin"
+	clib "github.com/sha1n/clib/pkg"
 	"github.com/spf13/cobra"
 )
 
