@@ -2,9 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/sha1n/hako/internal"
-	"github.com/spf13/cobra"
 	"log"
+
+	clib "github.com/sha1n/clib/pkg"
+	"github.com/sha1n/hako/internal"
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 )
 
 // ProgramName : passed from build environment
@@ -16,8 +19,19 @@ var Build string
 // Version : passed from build environment
 var Version string
 
+// GitHubOwner : repository owner on github
+const GitHubOwner = "sha1n"
+
+// GitHubRepoName : repository name on github
+const GitHubRepoName = "hako"
+
 func init() {
 	log.SetPrefix("[HAKO] ")
+	logrus.StandardLogger().SetFormatter(
+		&logrus.TextFormatter{
+			DisableTimestamp: true,
+		},
+	)
 }
 
 func main() {
@@ -30,7 +44,7 @@ Build label: %s`, Version, Build),
 	rootCmd.SetVersionTemplate(`{{printf "%s" .Version}}`)
 
 	rootCmd.AddCommand(internal.CreateStartCommand())
-	rootCmd.AddCommand(internal.CreateUpdateCommand(Version, ProgramName))
+	rootCmd.AddCommand(clib.CreateUpdateCommand(GitHubOwner, GitHubRepoName, Version, ProgramName, clib.NewIOContext()))
 
 	_ = rootCmd.Execute()
 }
