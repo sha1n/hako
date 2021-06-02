@@ -14,7 +14,9 @@ GOFILES := $(shell find . -type f -name '*.go' -not -path './vendor/*')
 GOOS_DARWIN := "darwin"
 GOOS_LINUX := "linux"
 GOOS_WINDOWS := "windows"
-GOARCH := "amd64"
+GOARCH_AMD64 := "amd64"
+GOARCH_ARM64 := "arm64"
+GOARCH_ARM := "arm"
 
 # Use linker flags to provide version/build settings
 LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Build=$(BUILD) -X=main.ProgramName=$(PROGRAMNAME)"
@@ -28,58 +30,71 @@ PID := $(GOBUILD)/.$(PROJECTNAME).pid
 # Make is verbose in Linux. Make it silent.
 MAKEFLAGS += --silent
 
-default: install format test compile
+default: clean install lint format test compile
+
+ci-checks: lint format test
 
 build-docker: go-build-linux build-docker-image
 
-## install: Install missing dependencies.
 install: go-get
 
 format: go-format
 
-#lint: go-lint
+lint: go-lint
 
-## compile: Compile the binary.
 compile:
 	@[ -d $(GOBUILD) ] || mkdir -p $(GOBUILD)
 	@-touch $(STDERR)
 	@-rm $(STDERR)
-	@-$(MAKE) -s go-compile 2> $(STDERR)
+	@-$(MAKE) -s go-build 2> $(STDERR)
 	@cat $(STDERR) | sed -e '1s/.*/\nError:\n/'  | sed 's/make\[.*/ /' | sed "/^/s/^/     /" 1>&2
 
 
 test: go-test
 
-## clean: Clean build files. Runs `go clean` internally.
+cover: go-cover
+
 clean:
 	@-rm $(GOBIN)/$(PROGRAMNAME)* 2> /dev/null
 	@-$(MAKE) go-clean
 
 go-lint:
-	# TODO: golint is no longer available - need to download or build it from sources here.
 	@echo "  >  Linting source files..."
-	golint $(GOFILES)
+	go vet -mod=readonly -c=10 `go list -mod=readonly ./...`
 
 go-format:
 	@echo "  >  Formating source files..."
 	gofmt -s -w $(GOFILES)
 
-go-compile: go-get go-build-linux go-build-darwin go-build-windows
+go-build: go-get go-build-linux-amd64 go-build-linux-arm64 go-build-darwin-amd64 go-build-windows-amd64 go-build-windows-arm
 
 go-test:
-	go test -v `go list ./...`
+	go test -mod=readonly `go list -mod=readonly ./...`
 
-go-build-linux:
-	@echo "  >  Building linux binaries..."
-	@GOPATH=$(GOPATH) GOOS=$(GOOS_LINUX) GOARCH=$(GOARCH) GOBIN=$(GOBIN) go build $(LDFLAGS) -o $(GOBIN)/$(PROGRAMNAME)-$(GOOS_LINUX)-$(GOARCH) ./cmd/hako
+go-cover:
+	go test -mod=readonly -coverprofile=$(GOBUILD)/.coverprof `go list -mod=readonly ./...`
+	go tool cover -html=$(GOBUILD)/.coverprof -o $(GOBUILD)/coverage.html
+	@open $(GOBUILD)/coverage.html
 
-go-build-darwin:
+go-build-linux-amd64:
+	@echo "  >  Building linux amd64 binaries..."
+	@GOPATH=$(GOPATH) GOOS=$(GOOS_LINUX) GOARCH=$(GOARCH_AMD64) GOBIN=$(GOBIN) go build -mod=readonly $(LDFLAGS) -o $(GOBIN)/$(PROGRAMNAME)-$(GOOS_LINUX)-$(GOARCH_AMD64) $(GOBASE)/cmd/hako
+
+go-build-linux-arm64:
+	@echo "  >  Building linux arm64 binaries..."
+	@GOPATH=$(GOPATH) GOOS=$(GOOS_LINUX) GOARCH=$(GOARCH_ARM64) GOBIN=$(GOBIN) go build -mod=readonly $(LDFLAGS) -o $(GOBIN)/$(PROGRAMNAME)-$(GOOS_LINUX)-$(GOARCH_ARM64) $(GOBASE)/cmd/hako
+
+go-build-darwin-amd64:
 	@echo "  >  Building darwin binaries..."
-	@GOPATH=$(GOPATH) GOOS=$(GOOS_DARWIN) GOARCH=$(GOARCH) GOBIN=$(GOBIN) go build $(LDFLAGS) -o $(GOBIN)/$(PROGRAMNAME)-$(GOOS_DARWIN)-$(GOARCH) ./cmd/hako
+	@GOPATH=$(GOPATH) GOOS=$(GOOS_DARWIN) GOARCH=$(GOARCH_AMD64) GOBIN=$(GOBIN) go build -mod=readonly $(LDFLAGS) -o $(GOBIN)/$(PROGRAMNAME)-$(GOOS_DARWIN)-$(GOARCH_AMD64) $(GOBASE)/cmd/hako
 
-go-build-windows:
-	@echo "  >  Building windows binaries..."
-	@GOPATH=$(GOPATH) GOOS=$(GOOS_WINDOWS) GOARCH=$(GOARCH) GOBIN=$(GOBIN) go build $(LDFLAGS) -o $(GOBIN)/$(PROGRAMNAME)-$(GOOS_WINDOWS)-$(GOARCH).exe ./cmd/hako
+go-build-windows-amd64:
+	@echo "  >  Building windows amd64 binaries..."
+	@GOPATH=$(GOPATH) GOOS=$(GOOS_WINDOWS) GOARCH=$(GOARCH_AMD64) GOBIN=$(GOBIN) go build -mod=readonly $(LDFLAGS) -o $(GOBIN)/$(PROGRAMNAME)-$(GOOS_WINDOWS)-$(GOARCH_AMD64).exe $(GOBASE)/cmd/hako
+
+go-build-windows-arm:
+	@echo "  >  Building windows arm binaries..."
+	@GOPATH=$(GOPATH) GOOS=$(GOOS_WINDOWS) GOARCH=$(GOARCH_ARM) GOBIN=$(GOBIN) go build -mod=readonly $(LDFLAGS) -o $(GOBIN)/$(PROGRAMNAME)-$(GOOS_WINDOWS)-$(GOARCH_ARM).exe $(GOBASE)/cmd/hako
 
 go-generate:
 	@echo "  >  Generating dependency files..."
@@ -94,7 +109,7 @@ go-install:
 
 go-clean:
 	@echo "  >  Cleaning build cache"
-	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go clean ./cmd/hako
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go clean -mod=readonly $(GOBASE)/cmd/hako
 
 build-docker-image:
 	@echo "  >  Building docker image..."
