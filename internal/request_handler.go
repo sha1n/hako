@@ -1,20 +1,20 @@
-package startcmd
+package internal
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/sha1n/hako/cmd/hako/console"
 	"io/ioutil"
 	"log"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func echoHandlerWith(verbose bool, verboseHeaders bool, delay int32) func(*gin.Context) {
 	maybeDelay := func() {
 		if delay > 0 {
 			if verbose {
-				log.Printf(console.Green("Delaying response in %d millis", delay))
+				log.Printf(Green("Delaying response in %d millis", delay))
 			}
 			time.Sleep(time.Duration(delay) * time.Millisecond)
 		}
@@ -28,7 +28,7 @@ func handler(verbose bool, verboseHeaders bool, doBefore func()) func(*gin.Conte
 		// todo: in case verbose is off, we definitely don't have to read the entire body into memory.
 		bodyBytes, err := ioutil.ReadAll(c.Request.Body)
 		if err != nil {
-			log.Println(console.Red("Failed to read request body: %s", err.Error()))
+			log.Println(Red("Failed to read request body: %s", err.Error()))
 		} else {
 			if verboseHeaders {
 				printHeaders(c)
@@ -47,7 +47,7 @@ func handler(verbose bool, verboseHeaders bool, doBefore func()) func(*gin.Conte
 		}
 		_, err = c.Writer.Write(bodyBytes)
 		if err != nil {
-			log.Println(console.Red("Failed to echo request body: %s", err.Error()))
+			log.Println(Red("Failed to echo request body: %s", err.Error()))
 		}
 	}
 }
@@ -56,7 +56,7 @@ func printHeaders(ctx *gin.Context) {
 	var headersStr = ""
 	for header := range ctx.Request.Header {
 		headersStr += fmt.Sprintf(
-			"%s : %s\n\r", console.Bold(header), console.Bold(console.Cyan(ctx.Request.Header.Get(header))))
+			"%s : %s\n\r", Bold(header), Bold(Cyan(ctx.Request.Header.Get(header))))
 	}
 	log.Printf(`Received headers:
 
@@ -70,6 +70,6 @@ func printBody(bodyBytes []byte) {
 %s
 
 `,
-		console.Yellow(strings.TrimSpace(strings.ReplaceAll(string(bodyBytes), "%", "%%"))),
+		Yellow(strings.TrimSpace(strings.ReplaceAll(string(bodyBytes), "%", "%%"))),
 	)
 }

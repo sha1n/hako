@@ -1,9 +1,10 @@
-package startcmd
+package internal
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"strings"
+
+	"github.com/spf13/cobra"
 )
 
 // CreateCommand creates a new cobra Command for the start CLI command.

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/sha1n/hako/cmd/hako/startcmd"
+	"github.com/sha1n/hako/internal"
 	"github.com/spf13/cobra"
 	"log"
 )
@@ -28,7 +28,7 @@ func main() {
 Build label: %s`, Version, Build),
 	}
 	rootCmd.SetVersionTemplate(`{{printf "%s" .Version}}`)
-	rootCmd.AddCommand(startcmd.CreateCommand())
+	rootCmd.AddCommand(internal.CreateCommand())
 
 	_ = rootCmd.Execute()
 }

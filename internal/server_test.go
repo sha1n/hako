@@ -1,4 +1,4 @@
-package http
+package internal
 
 import (
 	"encoding/json"
@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sha1n/hako/cmd/hako/utils"
+	"github.com/sha1n/hako/test"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -48,7 +48,7 @@ func TestStart(t *testing.T) {
 }
 
 func TestHttpServiceShouldWork(t *testing.T) {
-	inputMessage := message{utils.RandomString(10)}
+	inputMessage := message{test.RandomString(10)}
 	scope := newServerTestScope()
 	server := scope.newServer(engineWithPostHandler("/echo", echoHandler()))
 	defer server.StopAsync()
@@ -67,7 +67,7 @@ type scope struct {
 }
 
 func newServerTestScope() scope {
-	port, _ := utils.RandomFreePort()
+	port, _ := test.RandomFreePort()
 	return scope{
 		port: port,
 	}
