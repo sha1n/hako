@@ -10,7 +10,7 @@ import (
 
 func TestRandomString(t *testing.T) {
 	length := randomLength()
-	randomString := RandomString(length)
+	randomString := RandomStringN(length)
 
 	assert.Len(t, randomString, length)
 	assertInRange(t, randomString, alphanumLettersWithPunc)

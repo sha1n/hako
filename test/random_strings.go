@@ -5,9 +5,14 @@ import "math/rand"
 const alphanumLetters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 const alphanumLettersWithPunc = alphanumLetters + "!@#$%^&*()_-+={[}]|\\/?><,.~` "
 
-// RandomString creates a new random alphanumeric string, 'n' characters long.
-func RandomString(n int) string {
+// RandomStringN creates a new random alphanumeric string, 'n' characters long.
+func RandomStringN(n int) string {
 	return randomStringWith(alphanumLettersWithPunc, n)
+}
+
+// RandomString ...
+func RandomString() string {
+	return randomStringWith(alphanumLettersWithPunc, rand.Intn(50))
 }
 
 func randomStringWith(charRange string, length int) string {

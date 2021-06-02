@@ -28,7 +28,9 @@ func main() {
 Build label: %s`, Version, Build),
 	}
 	rootCmd.SetVersionTemplate(`{{printf "%s" .Version}}`)
-	rootCmd.AddCommand(internal.CreateCommand())
+
+	rootCmd.AddCommand(internal.CreateStartCommand())
+	rootCmd.AddCommand(internal.CreateUpdateCommand(Version, ProgramName))
 
 	_ = rootCmd.Execute()
 }
