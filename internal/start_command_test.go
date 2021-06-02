@@ -1,13 +1,14 @@
-package startcmd
+package internal
 
 import (
-	"github.com/sha1n/hako/cmd/hako/utils"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/sha1n/hako/test"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestStartWithDefaults(t *testing.T) {
@@ -79,8 +80,31 @@ func TestStartWithDelay(t *testing.T) {
 	assert.Equal(t, "zzz...", w.Body.String())
 }
 
+func TestEchoEndpointSanity(t *testing.T) {
+	scope := newServerTestScope()
+	c, _ := newConfigWith("", 0)
+	c.ServerPort = scope.port
+	c.Verbose = true
+	c.VerboseHeaders = true
+
+	stop := StartAsync(c)
+	defer stop()
+
+	assert.Eventually(
+		t,
+		func() bool {
+			if res, err := http.Get(scope.serverUrlWith("/echo")); err == nil {
+				return res.StatusCode == 200
+			}
+			return false
+		},
+		time.Second*30,
+		time.Millisecond*10,
+	)
+}
+
 func newConfigWith(path string, delay int32) (config Config, err error) {
-	port, err := utils.RandomFreePort()
+	port, err := test.RandomFreePort()
 
 	config = Config{
 		ServerPort: port,

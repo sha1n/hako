@@ -1,13 +1,12 @@
-package startcmd
+package internal
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/sha1n/hako/cmd/hako/http"
-	"github.com/sha1n/hako/cmd/hako/utils"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Config start command configuration
@@ -20,9 +19,11 @@ type Config struct {
 }
 
 // StartAsync starts an echo server in the background and returns immediately.
-func StartAsync(config Config) {
+func StartAsync(config Config) func() {
 	server := createHTTPServer(config)
 	server.StartAsync()
+
+	return server.StopAsync
 }
 
 // Start starts an echo server in the background and awaits shutdown signal.
@@ -41,18 +42,18 @@ func awaitShutdownSig() {
 	<-quitChannel
 }
 
-func createHTTPServer(config Config) http.Server {
+func createHTTPServer(config Config) Server {
 	router := createGinEngine(config)
 
-	server := http.NewServer(config.ServerPort, router)
+	server := NewServer(config.ServerPort, router)
 
 	stopServerAsync := func() {
 		server.StopAsync()
 	}
 
 	log.Println("Registering signal listeners for graceful HTTP server shutdown..")
-	utils.RegisterShutdownHook(utils.NewSignalHook(syscall.SIGTERM, stopServerAsync))
-	utils.RegisterShutdownHook(utils.NewSignalHook(syscall.SIGKILL, stopServerAsync))
+	RegisterShutdownHook(NewSignalHook(syscall.SIGTERM, stopServerAsync))
+	RegisterShutdownHook(NewSignalHook(syscall.SIGKILL, stopServerAsync))
 
 	return server
 }
@@ -60,9 +61,9 @@ func createHTTPServer(config Config) http.Server {
 func createGinEngine(config Config) *gin.Engine {
 	var router *gin.Engine
 	if config.Verbose {
-		router = http.NewDefaultEngine()
+		router = NewDefaultEngine()
 	} else {
-		router = http.NewSilentEngine()
+		router = NewSilentEngine()
 	}
 	registerHandlers(router, "/echo", echoHandlerWith(config.Verbose, config.VerboseHeaders, config.Delay))
 
