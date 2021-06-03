@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	clib "github.com/sha1n/clib/pkg"
+	clib "github.com/sha1n/clib/pkg/cmd"
 	"github.com/sha1n/hako/internal"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
