@@ -9,7 +9,7 @@ import (
 	"syscall"
 
 	"github.com/gin-gonic/gin"
-	clib "github.com/sha1n/clib/pkg"
+	clibos "github.com/sha1n/clib/pkg/os"
 	"github.com/spf13/cobra"
 )
 
@@ -103,8 +103,8 @@ func createHTTPServer(config Config) Server {
 	}
 
 	log.Println("Registering signal listeners for graceful HTTP server shutdown..")
-	clib.RegisterShutdownHook(clib.NewSignalHook(syscall.SIGTERM, stopServerAsync))
-	clib.RegisterShutdownHook(clib.NewSignalHook(syscall.SIGKILL, stopServerAsync))
+	clibos.RegisterShutdownHook(clibos.NewSignalHook(syscall.SIGTERM, stopServerAsync))
+	clibos.RegisterShutdownHook(clibos.NewSignalHook(syscall.SIGKILL, stopServerAsync))
 
 	return server
 }
