@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	clib "github.com/sha1n/clib/pkg/cmd"
+	gommons "github.com/sha1n/gommons/pkg/cmd"
 	"github.com/sha1n/hako/internal"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -44,7 +44,7 @@ Build label: %s`, Version, Build),
 	rootCmd.SetVersionTemplate(`{{printf "%s" .Version}}`)
 
 	rootCmd.AddCommand(internal.CreateStartCommand())
-	rootCmd.AddCommand(clib.CreateUpdateCommand(GitHubOwner, GitHubRepoName, Version, ProgramName))
+	rootCmd.AddCommand(gommons.CreateUpdateCommand(GitHubOwner, GitHubRepoName, Version, ProgramName))
 
 	_ = rootCmd.Execute()
 }
