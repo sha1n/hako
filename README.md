@@ -6,11 +6,51 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Release Drafter](https://github.com/sha1n/hako/actions/workflows/release-drafter.yml/badge.svg)](https://github.com/sha1n/hako/actions/workflows/release-drafter.yml)
 
+- [Hako](#hako)
+  - [Installation](#installation)
+    - [Install From a Homebrew Tap](#install-from-a-homebrew-tap)
+    - [Downloading released binaries](#downloading-released-binaries)
+    - [Pulling a Public Docker Image](#pulling-a-public-docker-image)
+    - [Building from sources](#building-from-sources)
+    - [Building docker image from sources](#building-docker-image-from-sources)
+  - [Usage](#usage)
+
 # Hako
 Hako is an HTTP echo server with a CLI interface that provides some extra features. Hako has been developed to help me develop and test one of my projects and since the need for such utility keeps popping every few years, I thought it would be nice to share it with others.
 
+## Installation
+### Install From a Homebrew Tap
+```
+# Tap the repository
+brew tap sha1n/tap
 
-## Building from sources
+# Install
+brew install sha1n/hako
+
+# Update
+brew upgrade hako
+```
+
+### Downloading released binaries
+
+**MacOS cURL Example**
+```bash
+curl -Lf --compressed -o <~/.local/bin/hako> https://github.com/sha1n/hako/releases/download/v0.6.1/hako-darwin-amd64
+
+chmod +x <~/.local/bin/hako>
+```
+
+### Pulling a Public Docker Image
+```
+docker pull sha1n/hako
+
+# you can then start the server using 
+docker run sha1n/hako
+# or with custom arguments 
+docker run -p 8090:8080 sha1n/hako /bin/sh -c "/opt/hako start --path /echo/shmecho --delay 1 --verbose --verbose-headers"
+```
+
+### Building from sources
 ```bash
 git clone git@github.com:sha1n/hako.git
 cd hako
@@ -22,33 +62,14 @@ make
 cp bin/hako <~/.local/bin/hako>
 ```
 
-## Building docker image from sources
+### Building docker image from sources
 Use the following command to build a docker image from the local sources. The image will be tagged `hako:latest`.
 ```bash 
 make build-docker
 ```
 
-## Downloading released binaries
-
-**MacOS cURL Example**
-```bash
-curl -Lf --compressed -o <~/.local/bin/hako> https://github.com/sha1n/hako/releases/download/v0.6.1/hako-darwin-amd64
-
-chmod +x <~/.local/bin/hako>
-```
-
-## Pulling a Public Docker Image
-```
-docker pull sha1n/hako
-
-# you can then start the server using 
-docker run sha1n/hako
-# or with custom arguments 
-docker run -p 8090:8080 sha1n/hako /bin/sh -c "/opt/hako start --path /echo/shmecho --delay 1 --verbose --verbose-headers"
-```
-
-## Usage Example
-See usage examples below. Use `hako --help` for help.
+## Usage
+Use `hako --help` for help.
 
 **Terminal A:**
 ```bash 
