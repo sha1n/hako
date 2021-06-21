@@ -18,7 +18,7 @@ GOARCH_ARM64 := "arm64"
 GOARCH_ARM := "arm"
 
 # Use linker flags to provide version/build settings
-LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Build=$(BUILD) -X=main.ProgramName=$(PROGRAMNAME)"
+LDFLAGS=-ldflags "-w -s -X=main.Version=$(VERSION) -X=main.Build=$(BUILD) -X=main.ProgramName=$(PROGRAMNAME)"
 
 # Redirect error output to a file, so we can show it in development mode.
 STDERR := $(GOBUILD)/.$(PROJECTNAME)-stderr.txt
