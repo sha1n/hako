@@ -25,7 +25,7 @@ Hako is an HTTP echo server with a CLI interface that provides some extra featur
 brew tap sha1n/tap
 
 # Install
-brew install sha1n/hako
+brew install hako
 
 # Update
 brew upgrade hako
