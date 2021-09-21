@@ -47,6 +47,10 @@ build:
 	@-touch $(STDERR)
 	@-rm $(STDERR)
 	@-$(MAKE) -s go-build 2> $(STDERR)
+	# generate completions
+	bin/$(PROJECTNAME)-$(GOHOSTOS)-$(GOHOSTARCH) completion zsh > $(GOBUILD)/completions/_$(PROJECTNAME)
+	bin/$(PROJECTNAME)-$(GOHOSTOS)-$(GOHOSTARCH) completion bash > $(GOBUILD)/completions/$(PROJECTNAME).bash
+	bin/$(PROJECTNAME)-$(GOHOSTOS)-$(GOHOSTARCH) completion fish > $(GOBUILD)/completions/$(PROJECTNAME).fish
 	@cat $(STDERR) | sed -e '1s/.*/\nError:\n/'  | sed 's/make\[.*/ /' | sed "/^/s/^/     /" 1>&2
 
 

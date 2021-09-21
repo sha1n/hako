@@ -44,6 +44,7 @@ Build label: %s`, Version, Build),
 	rootCmd.SetVersionTemplate(`{{printf "%s" .Version}}`)
 
 	rootCmd.AddCommand(internal.CreateStartCommand())
+	rootCmd.AddCommand(gommons.CreateShellCompletionScriptGenCommand())
 	rootCmd.AddCommand(gommons.CreateUpdateCommand(GitHubOwner, GitHubRepoName, Version, ProgramName))
 
 	_ = rootCmd.Execute()
