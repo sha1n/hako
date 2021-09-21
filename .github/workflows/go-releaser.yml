@@ -3,7 +3,8 @@ name: GoReleaser
 on:
   release:
     types:
-      - created
+      - published
+
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
