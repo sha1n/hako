@@ -6,6 +6,8 @@ PROJECTNAME := "hako"
 PROGRAMNAME := $(PROJECTNAME)
 
 # Go related variables.
+GOHOSTOS := $(shell go env GOHOSTOS)
+GOHOSTARCH := $(shell go env GOHOSTARCH)
 GOBASE := $(shell pwd)
 GOBIN := $(GOBASE)/bin
 GOBUILD := $(GOBASE)/build
@@ -44,6 +46,7 @@ lint: go-lint
 .PHONY: build
 build:
 	@[ -d $(GOBUILD) ] || mkdir -p $(GOBUILD)
+	@-mkdir -p $(GOBUILD)/completions
 	@-touch $(STDERR)
 	@-rm $(STDERR)
 	@-$(MAKE) -s go-build 2> $(STDERR)
