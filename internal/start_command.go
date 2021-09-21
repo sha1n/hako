@@ -85,7 +85,7 @@ func Start(config Config) {
 }
 
 func awaitShutdownSig() {
-	quitChannel := make(chan os.Signal)
+	quitChannel := make(chan os.Signal, 1)
 	signal.Notify(quitChannel, syscall.SIGINT, syscall.SIGTERM)
 
 	log.Println("Waiting for shutdown signal...")
