@@ -7,7 +7,7 @@ require (
 	github.com/sha1n/gommons v0.0.10
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.4.0
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.7.1
 )
 
 require (
