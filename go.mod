@@ -3,7 +3,7 @@ module github.com/sha1n/hako
 go 1.18
 
 require (
-	github.com/gin-gonic/gin v1.8.0
+	github.com/gin-gonic/gin v1.8.1
 	github.com/sha1n/gommons v0.0.11
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.4.0
