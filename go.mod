@@ -6,7 +6,7 @@ require (
 	github.com/gin-gonic/gin v1.9.0
 	github.com/sha1n/gommons v0.0.12
 	github.com/sirupsen/logrus v1.9.0
-	github.com/spf13/cobra v1.6.1
+	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.2
 )
 
@@ -21,7 +21,7 @@ require (
 	github.com/goccy/go-json v0.10.0 // indirect
 	github.com/google/go-github/v35 v35.3.0 // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
-	github.com/inconshreveable/mousetrap v1.0.1 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
