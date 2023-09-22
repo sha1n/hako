@@ -2,7 +2,7 @@ package internal
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"strings"
 	"time"
@@ -26,7 +26,7 @@ func echoHandlerWith(verbose bool, verboseHeaders bool, delay int32) func(*gin.C
 func handler(verbose bool, verboseHeaders bool, doBefore func()) func(*gin.Context) {
 	return func(c *gin.Context) {
 		// todo: in case verbose is off, we definitely don't have to read the entire body into memory.
-		bodyBytes, err := ioutil.ReadAll(c.Request.Body)
+		bodyBytes, err := io.ReadAll(c.Request.Body)
 		if err != nil {
 			log.Println(Red("Failed to read request body: %s", err.Error()))
 		} else {
