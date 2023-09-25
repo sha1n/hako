@@ -57,8 +57,8 @@ github.com/pelletier/go-toml/v2 v2.0.8/go.mod h1:vuYfssBdrU2XDZ9bYydBu6t+6a6PYNc
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
-github.com/sha1n/gommons v0.0.14 h1:LsZeG85USg/vdOdUQonwRVl5kLe3Ryv0pbqn9r48yiU=
-github.com/sha1n/gommons v0.0.14/go.mod h1:Qf66Mv+Lrocn720WwqivcpbhVSyQA4u/N/mPo3F3w00=
+github.com/sha1n/gommons v0.0.17 h1:RLNOwIeFN3ne2cseYXMZ0Js0hzSkh33xINFtbDYpSVw=
+github.com/sha1n/gommons v0.0.17/go.mod h1:Qf66Mv+Lrocn720WwqivcpbhVSyQA4u/N/mPo3F3w00=
 github.com/sirupsen/logrus v1.9.3 h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ=
 github.com/sirupsen/logrus v1.9.3/go.mod h1:naHLuLoDiP4jHNo9R0sCBMtWGeIprob74mVsIT4qYEQ=
 github.com/spf13/cobra v1.7.0 h1:hyqWnYt1ZQShIddO5kBpj3vu05/++x6tJ6dg8EC572I=
