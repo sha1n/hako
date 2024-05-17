@@ -17,7 +17,6 @@ builds:
     main: ./cmd/main.go
 archives:
   -
-    rlcp: true
     id: main
     files:
       - README.md
@@ -42,7 +41,7 @@ brews:
   - name: "{{ .ProjectName }}"
     goarm: 6
 
-    tap:
+    repository:
       owner: sha1n
       name: homebrew-tap
 
@@ -52,7 +51,7 @@ brews:
       name: goreleaserbot
       email: goreleaser@carlosbecker.com
 
-    folder: Formula
+    directory: Formula
 
     homepage: "https://sha1n.github.io/{{ .ProjectName }}/"
     description: "CLI benchmarking tool"
