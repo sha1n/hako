@@ -36,7 +36,9 @@ func TestStop(t *testing.T) {
 
 func TestStart(t *testing.T) {
 	scope := newServerTestScope()
-	server := scope.newServer(NewDefaultEngine())
+	engine := NewDefaultEngine()
+	engine.GET("/", func(ctx *gin.Context) { ctx.JSON(200, nil) })
+	server := scope.newServer(engine)
 	defer server.StopAsync()
 
 	server.StartAsync()
@@ -44,7 +46,7 @@ func TestStart(t *testing.T) {
 
 	res, err := http.Get(scope.serverUrlWith("/"))
 	assert.NoError(t, err)
-	assert.Equal(t, 404, res.StatusCode)
+	assert.Equal(t, 200, res.StatusCode)
 }
 
 func TestHttpServiceShouldWork(t *testing.T) {
