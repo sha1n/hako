@@ -14,7 +14,7 @@ func echoHandlerWith(verbose bool, verboseHeaders bool, delay int32) func(*gin.C
 	maybeDelay := func() {
 		if delay > 0 {
 			if verbose {
-				log.Printf(Green("Delaying response in %d millis", delay))
+				log.Print(Green("Delaying response in %d millis", delay))
 			}
 			time.Sleep(time.Duration(delay) * time.Millisecond)
 		}
@@ -56,7 +56,7 @@ func printHeaders(ctx *gin.Context) {
 	var headersStr = ""
 	for header := range ctx.Request.Header {
 		headersStr += fmt.Sprintf(
-			"%s : %s\n\r", Bold(header), Bold(Cyan(ctx.Request.Header.Get(header))))
+			"%s : %s\n\r", Bold("%s", header), Bold("%s", Cyan("%s", ctx.Request.Header.Get(header))))
 	}
 	log.Printf(`Received headers:
 
@@ -70,6 +70,6 @@ func printBody(bodyBytes []byte) {
 %s
 
 `,
-		Yellow(strings.TrimSpace(strings.ReplaceAll(string(bodyBytes), "%", "%%"))),
+		Yellow("%s", strings.TrimSpace(strings.ReplaceAll(string(bodyBytes), "%", "%%"))),
 	)
 }

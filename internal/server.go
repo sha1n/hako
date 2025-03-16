@@ -3,7 +3,6 @@ package internal
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -113,5 +112,5 @@ func NewSilentEngine() *gin.Engine {
 }
 
 func basicRequestLoggerMiddleware(c *gin.Context) {
-	log.Printf(fmt.Sprintf("Handling request at %s", c.Request.RequestURI))
+	log.Printf("Handling request at %s", c.Request.RequestURI)
 }
