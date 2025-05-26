@@ -5,7 +5,7 @@ go 1.24.0
 toolchain go1.24.1
 
 require (
-	github.com/gin-gonic/gin v1.10.0
+	github.com/gin-gonic/gin v1.10.1
 	github.com/sha1n/gommons v0.0.19
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.9.1
