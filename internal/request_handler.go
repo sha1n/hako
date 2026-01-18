@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -40,6 +42,15 @@ func handler(verbose bool, verboseHeaders bool, doBefore func()) func(*gin.Conte
 		}
 
 		doBefore()
+
+		status := http.StatusOK
+		if s := c.GetHeader("X-Hako-Status"); s != "" {
+			if parsedStatus, err := strconv.Atoi(s); err == nil {
+				status = parsedStatus
+			}
+		}
+
+		c.Status(status)
 
 		requestContentType := c.GetHeader("Content-Type")
 		if requestContentType != "" {

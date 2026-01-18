@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	gommonsos "github.com/sha1n/gommons/pkg/os"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -26,6 +27,7 @@ func CreateStartCommand() *cobra.Command {
 	cmd.Flags().Int32P("delay", "d", 0, `The minimum delay of each response in milliseconds`)
 	cmd.Flags().BoolP("verbose", "v", false, `Prints the body of every incoming request`)
 	cmd.Flags().BoolP("verbose-headers", "", false, `Prints the headers of every incoming request`)
+	cmd.Flags().BoolP("json", "", false, `Use JSON logging format`)
 
 	return cmd
 }
@@ -36,6 +38,7 @@ func doStart(cmd *cobra.Command, args []string) {
 	additionalPath, _ := cmd.Flags().GetString("path")
 	verbose, _ := cmd.Flags().GetBool("verbose")
 	verboseHeaders, _ := cmd.Flags().GetBool("verbose-headers")
+	jsonLog, _ := cmd.Flags().GetBool("json")
 
 	config := Config{
 		ServerPort:     port,
@@ -43,6 +46,7 @@ func doStart(cmd *cobra.Command, args []string) {
 		Verbose:        verbose,
 		VerboseHeaders: verboseHeaders,
 		Delay:          delay,
+		JSONLog:        jsonLog,
 	}
 
 	Start(config)
@@ -67,6 +71,7 @@ type Config struct {
 	Verbose        bool
 	VerboseHeaders bool
 	Delay          int32
+	JSONLog        bool
 }
 
 // StartAsync starts an echo server in the background and returns immediately.
@@ -79,9 +84,29 @@ func StartAsync(config Config) func() {
 
 // Start starts an echo server in the background and awaits shutdown signal.
 func Start(config Config) {
+	configureLogging(config)
 	StartAsync(config)
 
 	awaitShutdownSig()
+}
+
+func configureLogging(config Config) {
+	if config.JSONLog {
+		log.SetFlags(0) // Disable standard logger flags
+		log.SetOutput(newLogrusWriter())
+		logrus.SetFormatter(&logrus.JSONFormatter{})
+	}
+}
+
+type logrusWriter struct{}
+
+func newLogrusWriter() *logrusWriter {
+	return &logrusWriter{}
+}
+
+func (w *logrusWriter) Write(p []byte) (n int, err error) {
+	logrus.Info(string(p))
+	return len(p), nil
 }
 
 func awaitShutdownSig() {

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/sha1n/hako/test"
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -101,6 +102,17 @@ func TestEchoEndpointSanity(t *testing.T) {
 		time.Second*30,
 		time.Millisecond*10,
 	)
+}
+
+func TestConfigureLogging(t *testing.T) {
+	// Reset formatter after test
+	defer logrus.SetFormatter(&logrus.TextFormatter{DisableTimestamp: true})
+
+	config := Config{JSONLog: true}
+	configureLogging(config)
+
+	_, ok := logrus.StandardLogger().Formatter.(*logrus.JSONFormatter)
+	assert.True(t, ok, "Expected JSONFormatter")
 }
 
 func newConfigWith(path string, delay int32) (config Config, err error) {

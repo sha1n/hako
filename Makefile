@@ -35,7 +35,7 @@ default: lint format test build
 
 ci-checks: lint format test
 
-build-docker: go-build-linux build-docker-image
+build-docker: build-docker-image
 
 install: go-get
 
@@ -67,7 +67,7 @@ clean:
 
 go-lint:
 	@echo "  >  Linting source files..."
-	go vet -mod=readonly -c=10 `go list -mod=readonly ./...`
+	go vet -mod=readonly `go list -mod=readonly ./...`
 
 go-format:
 	@echo "  >  Formating source files..."
