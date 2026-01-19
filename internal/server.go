@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 func init() {
@@ -95,6 +97,7 @@ func NewDefaultEngine() *gin.Engine {
 	router := gin.Default()
 	router.HandleMethodNotAllowed = true
 
+	router.Use(requestIDMiddleware)
 	router.Use(basicRequestLoggerMiddleware)
 
 	return router
@@ -106,11 +109,22 @@ func NewSilentEngine() *gin.Engine {
 	router.Use(gin.Recovery())
 	router.HandleMethodNotAllowed = true
 
+	router.Use(requestIDMiddleware)
 	router.Use(basicRequestLoggerMiddleware)
 
 	return router
 }
 
 func basicRequestLoggerMiddleware(c *gin.Context) {
-	log.Printf("Handling request at %s", c.Request.RequestURI)
+	requestID := c.Writer.Header().Get("X-Request-ID")
+	log.Printf("[%s] Handling request at %s", requestID, c.Request.RequestURI)
+}
+
+func requestIDMiddleware(c *gin.Context) {
+	requestID := c.GetHeader("X-Request-ID")
+	if requestID == "" {
+		requestID = uuid.New().String()
+	}
+	c.Writer.Header().Set("X-Request-ID", requestID)
+	c.Next()
 }

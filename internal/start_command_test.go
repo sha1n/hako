@@ -7,6 +7,11 @@ import (
 	"testing"
 	"time"
 
+	"bytes"
+	"encoding/json"
+	"log"
+	"log/slog"
+
 	"github.com/sha1n/hako/test"
 	"github.com/stretchr/testify/assert"
 )
@@ -101,6 +106,85 @@ func TestEchoEndpointSanity(t *testing.T) {
 		time.Second*30,
 		time.Millisecond*10,
 	)
+}
+
+func TestConfigureLogging(t *testing.T) {
+	// Capture stderr
+	var buf bytes.Buffer
+	originalDefault := slog.Default()
+	originalLogOutput := log.Writer()
+	originalLogFlags := log.Flags()
+	defer func() {
+		slog.SetDefault(originalDefault)
+		log.SetOutput(originalLogOutput)
+		log.SetFlags(originalLogFlags)
+	}()
+
+	t.Run("JSONLogging", func(t *testing.T) {
+		config := Config{JSONLog: true}
+		configureLoggingWithOutput(config, &buf)
+
+		slog.Info("test message")
+
+		var logEntry map[string]interface{}
+		err := json.Unmarshal(buf.Bytes(), &logEntry)
+		assert.NoError(t, err, "Output should be valid JSON")
+		assert.Equal(t, "test message", logEntry["msg"])
+		assert.Equal(t, "INFO", logEntry["level"])
+	})
+
+	t.Run("TextLogging", func(t *testing.T) {
+		buf.Reset()
+		config := Config{JSONLog: false}
+		configureLoggingWithOutput(config, &buf)
+
+		slog.Info("test message")
+
+		assert.Contains(t, buf.String(), "level=INFO")
+		assert.Contains(t, buf.String(), "msg=\"test message\"")
+	})
+
+	t.Run("StandardLogRedirection", func(t *testing.T) {
+		buf.Reset()
+		config := Config{JSONLog: true}
+		configureLoggingWithOutput(config, &buf)
+
+		log.Println("legacy log message")
+
+		var logEntry map[string]interface{}
+		err := json.Unmarshal(buf.Bytes(), &logEntry)
+		assert.NoError(t, err, "Output should be valid JSON. Content: "+buf.String())
+		assert.Equal(t, "legacy log message", logEntry["msg"])
+		assert.Equal(t, "INFO", logEntry["level"])
+	})
+}
+
+func TestNormalizePath(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{"", "/"},
+		{"/", "/"},
+		{"path", "/path"},
+		{"/path", "/path"},
+		{" path ", "/path"},
+	}
+
+	for _, tt := range tests {
+		assert.Equal(t, tt.expected, normalizePath(tt.input))
+	}
+}
+
+func TestNewConfigFromArgs(t *testing.T) {
+	config := NewConfigFromArgs(8080, 100, "echo", true, true, true)
+
+	assert.Equal(t, 8080, config.ServerPort)
+	assert.Equal(t, int32(100), config.Delay)
+	assert.Equal(t, "/echo", config.EchoPath)
+	assert.True(t, config.Verbose)
+	assert.True(t, config.VerboseHeaders)
+	assert.True(t, config.JSONLog)
 }
 
 func newConfigWith(path string, delay int32) (config Config, err error) {

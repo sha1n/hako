@@ -8,11 +8,17 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRandomString(t *testing.T) {
+func TestRandomStringN(t *testing.T) {
 	length := randomLength()
 	randomString := RandomStringN(length)
 
 	assert.Len(t, randomString, length)
+	assertInRange(t, randomString, alphanumLettersWithPunc)
+}
+
+func TestRandomString(t *testing.T) {
+	randomString := RandomString()
+	// length varies, so we just check it returns something valid
 	assertInRange(t, randomString, alphanumLettersWithPunc)
 }
 
