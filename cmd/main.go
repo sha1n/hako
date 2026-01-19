@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 	"log"
+	"log/slog"
+	"os"
 	"runtime"
 
 	gommons "github.com/sha1n/gommons/pkg/cmd"
 	"github.com/sha1n/hako/internal"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -33,11 +34,14 @@ const GitHubRepoName = "hako"
 
 func init() {
 	log.SetPrefix("[HAKO] ")
-	logrus.StandardLogger().SetFormatter(
-		&logrus.TextFormatter{
-			DisableTimestamp: true,
+	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
+		ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+			if a.Key == slog.TimeKey {
+				return slog.Attr{}
+			}
+			return a
 		},
-	)
+	})))
 }
 
 func main() {

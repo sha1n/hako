@@ -2,7 +2,9 @@ package internal
 
 import (
 	"fmt"
+	"io"
 	"log"
+	"log/slog"
 	"os"
 	"os/signal"
 	"strings"
@@ -10,7 +12,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	gommonsos "github.com/sha1n/gommons/pkg/os"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -52,6 +53,18 @@ func doStart(cmd *cobra.Command, args []string) {
 	Start(config)
 }
 
+// NewConfigFromArgs creates a Config object from parsed arguments (helper for testing)
+func NewConfigFromArgs(port int, delay int32, path string, verbose, verboseHeaders, jsonLog bool) Config {
+	return Config{
+		ServerPort:     port,
+		EchoPath:       normalizePath(path),
+		Verbose:        verbose,
+		VerboseHeaders: verboseHeaders,
+		Delay:          delay,
+		JSONLog:        jsonLog,
+	}
+}
+
 func normalizePath(path string) string {
 	var normalizedPath = path
 
@@ -91,21 +104,51 @@ func Start(config Config) {
 }
 
 func configureLogging(config Config) {
+	configureLoggingWithOutput(config, os.Stderr)
+}
+
+func configureLoggingWithOutput(config Config, w io.Writer) {
+	var handler slog.Handler
+	opts := &slog.HandlerOptions{
+		Level: slog.LevelInfo,
+	}
+
 	if config.JSONLog {
-		log.SetFlags(0) // Disable standard logger flags
-		log.SetOutput(newLogrusWriter())
-		logrus.SetFormatter(&logrus.JSONFormatter{})
+		handler = slog.NewJSONHandler(w, opts)
+		// Redirect standard log library to write to slog
+		log.SetFlags(0)
+		log.SetOutput(newSlogWriter(handler))
+	} else {
+		handler = slog.NewTextHandler(w, &slog.HandlerOptions{
+			ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+				if a.Key == slog.TimeKey {
+					return slog.Attr{}
+				}
+				return a
+			},
+		})
+	}
+
+	slog.SetDefault(slog.New(handler))
+}
+
+type slogWriter struct {
+	logger *slog.Logger
+}
+
+func newSlogWriter(handler slog.Handler) *slogWriter {
+	return &slogWriter{
+		logger: slog.New(handler),
 	}
 }
 
-type logrusWriter struct{}
-
-func newLogrusWriter() *logrusWriter {
-	return &logrusWriter{}
-}
-
-func (w *logrusWriter) Write(p []byte) (n int, err error) {
-	logrus.Info(string(p))
+func (w *slogWriter) Write(p []byte) (n int, err error) {
+	// Remove trailing newline if present, as slog adds its own
+	msg := string(p)
+	if len(msg) > 0 && msg[len(msg)-1] == '\n' {
+		msg = msg[:len(msg)-1]
+	}
+	w.logger.Info(msg)
 	return len(p), nil
 }
 
