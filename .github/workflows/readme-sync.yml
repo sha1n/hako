@@ -5,7 +5,7 @@ name: Sync Site README
 
 on:
   pull_request:
-    branches: [master]
+    branches: [master, main]
     paths:
       - "README.md"
 
